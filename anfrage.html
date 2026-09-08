@@ -274,7 +274,7 @@
 
   <!-- Sendet die Daten direkt an das Google Apps Script, das an die Seedliste-Tabelle
        gebunden ist. Der versteckte iframe verhindert CORS-Probleme. Siehe README.md. -->
-  <form id="recruitingForm" action="https://script.google.com/macros/s/AKfycby-8GA4KdhJ4Oww2NkKI113ZxXeUerdNLeCP8xPiNyNndHzmGSkLE4Wsxf2q8Od5PbIpg/exec" method="POST" target="hidden_iframe">
+  <form id="recruitingForm" action="https://script.google.com/macros/s/AKfycby1oWoGmpfGeApmBXlJDf26iUKJEY1mlYbNg4_Riw3COkQMZtUyxdWnKEW6O32BKH6aDw/exec" method="POST" target="hidden_iframe">
 
     <!-- Für echte Besucher unsichtbar. Füllt nur Spam-Software aus. -->
     <div class="honeypot" aria-hidden="true">
@@ -290,29 +290,36 @@
       <h2>Ihr Unternehmen</h2>
 
       <label for="firmenname">Wie heißt Ihr Unternehmen? <span class="req">*</span></label>
-      <input type="text" id="firmenname" name="firmenname" required>
+      <input type="text" id="firmenname" name="firmenname" placeholder="z. B. Mustermann GmbH" required>
 
       <label for="branche">Was für ein Betrieb sind Sie? <span class="req">*</span></label>
       <div class="help">z. B. Handwerk, Handel, Gastronomie, Büro, Industrie</div>
-      <input type="text" id="branche" name="branche" required>
+      <input type="text" id="branche" name="branche" placeholder="z. B. Sanitär- und Heizungsbau" required>
 
       <label for="firmensitz">Wo hat Ihr Unternehmen seinen Sitz? <span class="req">*</span></label>
       <div class="help">PLZ und Ort reichen aus</div>
-      <input type="text" id="firmensitz" name="firmensitz" required>
+      <input type="text" id="firmensitz" name="firmensitz" placeholder="z. B. 48431 Rheine" required>
+
+      <label for="firmengroesse">Wie viele Mitarbeiter hat Ihr Unternehmen? <span class="opt">(optional)</span></label>
+      <input type="text" id="firmengroesse" name="firmengroesse" placeholder="z. B. 25 Mitarbeiter">
+
+      <label for="firma_web">Website &amp; Social-Media-Links Ihrer Firma <span class="opt">(optional)</span></label>
+      <div class="help">Website, Instagram, Facebook – hilft uns bei Bildern und der Ansprache der Bewerber.</div>
+      <textarea id="firma_web" name="firma_web" placeholder="z. B. www.mustermann-gmbh.de, instagram.com/mustermann_gmbh"></textarea>
 
       <div class="row2">
         <div>
           <label for="ansprechpartner_name">Wie heißen Sie? <span class="req">*</span></label>
-          <input type="text" id="ansprechpartner_name" name="ansprechpartner_name" required>
+          <input type="text" id="ansprechpartner_name" name="ansprechpartner_name" placeholder="z. B. Anna Mustermann" required>
         </div>
         <div>
           <label for="ansprechpartner_telefon">Ihre Telefonnummer <span class="req">*</span></label>
-          <input type="tel" id="ansprechpartner_telefon" name="ansprechpartner_telefon" required>
+          <input type="tel" id="ansprechpartner_telefon" name="ansprechpartner_telefon" placeholder="z. B. 0171 2345678" required>
         </div>
       </div>
 
       <label for="ansprechpartner_email">Ihre E-Mail-Adresse <span class="req">*</span></label>
-      <input type="email" id="ansprechpartner_email" name="ansprechpartner_email" required>
+      <input type="email" id="ansprechpartner_email" name="ansprechpartner_email" placeholder="z. B. anna@mustermann-gmbh.de" required>
 
       <div class="step-actions">
         <span></span>
@@ -334,7 +341,7 @@
 
           <label for="jobtitel_1">Wie soll die Stelle heißen? <span class="req">*</span></label>
           <div class="help">z. B. Bürokraft, Elektriker, Verkäuferin (m/w/d)</div>
-          <input type="text" id="jobtitel_1" name="jobtitel_1" required>
+          <input type="text" id="jobtitel_1" name="jobtitel_1" placeholder="z. B. Anlagenmechaniker SHK (m/w/d)" required>
 
           <div class="row2">
             <div>
@@ -343,9 +350,14 @@
             </div>
             <div>
               <label for="einsatzort_1">Wo arbeitet die Person hauptsächlich? <span class="req">*</span></label>
-              <input type="text" id="einsatzort_1" name="einsatzort_1" required>
+              <div class="help">Ort oder Umkreis</div>
+              <input type="text" id="einsatzort_1" name="einsatzort_1" placeholder="z. B. Rheine + Umkreis 50 km" required>
             </div>
           </div>
+
+          <label for="aufgaben_1">Was macht die Person konkret? <span class="req">*</span></label>
+          <div class="help">Die 3–5 wichtigsten Aufgaben im Arbeitsalltag</div>
+          <textarea id="aufgaben_1" name="aufgaben_1" placeholder="z. B.&#10;- Heizungs- und Sanitäranlagen beim Kunden installieren&#10;- Wartung und Reparatur bestehender Anlagen&#10;- Störungsdienst im Wechsel mit den Kollegen" required></textarea>
 
           <label>Welche Art von Anstellung ist das?</label>
           <div class="checkbox-group">
@@ -355,39 +367,54 @@
             <label><input type="checkbox" name="anstellungsart_1" value="Unbefristet"> Unbefristet</label>
           </div>
 
+          <label>Wie sind die Arbeitszeiten? <span class="opt">(optional)</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="arbeitszeiten_1" value="Feste Zeiten"> Feste Zeiten</label>
+            <label><input type="checkbox" name="arbeitszeiten_1" value="Gleitzeit"> Gleitzeit</label>
+            <label><input type="checkbox" name="arbeitszeiten_1" value="Frühschicht"> Frühschicht</label>
+            <label><input type="checkbox" name="arbeitszeiten_1" value="Spätschicht"> Spätschicht</label>
+            <label><input type="checkbox" name="arbeitszeiten_1" value="Nachtschicht"> Nachtschicht</label>
+            <label><input type="checkbox" name="arbeitszeiten_1" value="Wochenendarbeit"> Wochenendarbeit</label>
+            <label><input type="checkbox" name="arbeitszeiten_1" value="Rufbereitschaft"> Rufbereitschaft</label>
+          </div>
+
+          <label for="arbeitszeiten_details_1">Details zu den Arbeitszeiten? <span class="opt">(optional)</span></label>
+          <input type="text" id="arbeitszeiten_details_1" name="arbeitszeiten_details_1" placeholder="z. B. Mo–Fr 7–16 Uhr, 38,5 Std./Woche">
+
           <div class="row2">
             <div>
               <label for="gehalt_1">Welche Gehaltsspanne bieten Sie? <span class="opt">(optional)</span></label>
               <div class="help">brutto, pro Jahr — z. B. 45.000–55.000 €</div>
-              <input type="text" id="gehalt_1" name="gehalt_1">
+              <input type="text" id="gehalt_1" name="gehalt_1" placeholder="z. B. 38.000–46.000 € oder 18–22 €/Std.">
             </div>
             <div>
               <label for="wann_besetzt_1">Wann soll die Stelle besetzt sein? <span class="opt">(optional)</span></label>
               <div class="help">z. B. sofort, in 2 Monaten</div>
-              <input type="text" id="wann_besetzt_1" name="wann_besetzt_1">
+              <input type="text" id="wann_besetzt_1" name="wann_besetzt_1" placeholder="z. B. ab sofort">
             </div>
           </div>
 
           <label for="reiseanteil_1">Muss die Person viel reisen? <span class="opt">(optional)</span></label>
           <div class="help">z. B. nein, nur regional, deutschlandweit</div>
-          <input type="text" id="reiseanteil_1" name="reiseanteil_1">
+          <input type="text" id="reiseanteil_1" name="reiseanteil_1" placeholder="z. B. nur regional, abends zu Hause">
 
           <label for="qualifikation_1">Welche Ausbildung oder Erfahrung braucht die Person? <span class="opt">(optional)</span></label>
-          <textarea id="qualifikation_1" name="qualifikation_1"></textarea>
+          <div class="help">Auch: „keine Vorkenntnisse nötig, wir lernen an"</div>
+          <textarea id="qualifikation_1" name="qualifikation_1" placeholder="z. B. abgeschlossene Ausbildung im SHK-Bereich – Berufseinsteiger und Quereinsteiger mit handwerklichem Geschick auch willkommen"></textarea>
 
           <label for="fuehrerschein_1">Welchen Führerschein braucht die Person? <span class="opt">(optional)</span></label>
-          <input type="text" id="fuehrerschein_1" name="fuehrerschein_1" placeholder="z. B. Klasse B">
+          <input type="text" id="fuehrerschein_1" name="fuehrerschein_1" placeholder="z. B. Klasse B (PKW)">
 
           <label for="fachkenntnisse_1">Welche Fachkenntnisse sind wichtig? <span class="req">*</span></label>
           <div class="help">z. B. bestimmte Software, Maschinen, Werkzeuge oder Fachgebiete</div>
-          <textarea id="fachkenntnisse_1" name="fachkenntnisse_1" required></textarea>
+          <textarea id="fachkenntnisse_1" name="fachkenntnisse_1" placeholder="z. B. Erfahrung mit Wärmepumpen, Installationspläne lesen, sicherer Umgang mit Messtechnik" required></textarea>
 
           <label for="eigenschaften_1">Welche Eigenschaften soll die Person mitbringen? <span class="opt">(optional)</span></label>
           <div class="help">z. B. zuverlässig, selbstständig, kundenfreundlich, teamfähig</div>
-          <textarea id="eigenschaften_1" name="eigenschaften_1"></textarea>
+          <textarea id="eigenschaften_1" name="eigenschaften_1" placeholder="z. B. zuverlässig, freundlich im Kundenkontakt, arbeitet gern im Team"></textarea>
 
           <label for="sprachkenntnisse_1">Werden bestimmte Sprachkenntnisse gebraucht? <span class="opt">(optional)</span></label>
-          <input type="text" id="sprachkenntnisse_1" name="sprachkenntnisse_1">
+          <input type="text" id="sprachkenntnisse_1" name="sprachkenntnisse_1" placeholder="z. B. Deutsch für den Kundenkontakt, Englisch von Vorteil">
         </div>
       </div>
 
@@ -407,15 +434,48 @@
 
       <div class="highlight-question">
         <label for="warum_wir">Warum sollten sich Bewerber für Sie entscheiden? <span class="req">*</span></label>
-        <textarea id="warum_wir" name="warum_wir" required></textarea>
+        <div class="help">Was macht die Arbeit bei Ihnen besser als beim Wettbewerb? Ruhig ehrlich und konkret.</div>
+        <textarea id="warum_wir" name="warum_wir" placeholder="z. B. familiäres Team, moderne Werkzeuge und Fahrzeuge, feste Auftragslage in der Region, pünktliche Löhne, kurze Wege – der Chef packt selbst mit an" required></textarea>
       </div>
 
-      <label for="mitarbeiter_vorteile">Was bieten Sie Ihren Mitarbeitern? <span class="opt">(optional)</span></label>
-      <div class="help">z. B. Firmenwagen, Home-Office, Weiterbildung, Urlaubstage, Prämien</div>
-      <textarea id="mitarbeiter_vorteile" name="mitarbeiter_vorteile"></textarea>
+      <label for="urlaubstage">Wie viele Urlaubstage bieten Sie? <span class="opt">(optional)</span></label>
+      <div class="help">pro Jahr — z. B. 30 Tage</div>
+      <input type="text" id="urlaubstage" name="urlaubstage" placeholder="z. B. 30 Tage">
+
+      <div class="highlight-question">
+        <label>Welche Zusatzleistungen bieten Sie? <span class="opt">(optional)</span></label>
+        <div class="help">Alles ankreuzen, was zutrifft — das sind die Punkte, mit denen wir in der Anzeige werben.</div>
+        <div class="checkbox-group">
+          <label><input type="checkbox" name="benefits" value="Betriebliche Altersvorsorge"> Betriebliche Altersvorsorge</label>
+          <label><input type="checkbox" name="benefits" value="Weihnachtsgeld"> Weihnachtsgeld</label>
+          <label><input type="checkbox" name="benefits" value="Urlaubsgeld"> Urlaubsgeld</label>
+          <label><input type="checkbox" name="benefits" value="13. Monatsgehalt"> 13. Monatsgehalt</label>
+          <label><input type="checkbox" name="benefits" value="Firmenwagen / Dienstfahrzeug"> Firmenwagen / Dienstfahrzeug</label>
+          <label><input type="checkbox" name="benefits" value="Diensthandy / Laptop"> Diensthandy / Laptop</label>
+          <label><input type="checkbox" name="benefits" value="Jobrad / Bike-Leasing"> Jobrad / Bike-Leasing</label>
+          <label><input type="checkbox" name="benefits" value="Schicht-, Nacht- oder Wochenendzuschläge"> Schicht-, Nacht- oder Wochenendzuschläge</label>
+          <label><input type="checkbox" name="benefits" value="Prämien / Bonus / Erfolgsbeteiligung"> Prämien / Bonus / Erfolgsbeteiligung</label>
+          <label><input type="checkbox" name="benefits" value="Arbeitskleidung gestellt"> Arbeitskleidung gestellt</label>
+          <label><input type="checkbox" name="benefits" value="Weiterbildung / Schulungen"> Weiterbildung / Schulungen</label>
+          <label><input type="checkbox" name="benefits" value="Aufstiegs- / Entwicklungsmöglichkeiten"> Aufstiegs- / Entwicklungsmöglichkeiten</label>
+          <label><input type="checkbox" name="benefits" value="Kantine / Verpflegung / Getränke"> Kantine / Verpflegung / Getränke</label>
+          <label><input type="checkbox" name="benefits" value="Homeoffice-Tage möglich"> Homeoffice-Tage möglich</label>
+          <label><input type="checkbox" name="benefits" value="Betriebliche Gesundheitsangebote / Fitness"> Gesundheitsangebote / Fitness</label>
+          <label><input type="checkbox" name="benefits" value="Firmenevents / Teamausflüge"> Firmenevents / Teamausflüge</label>
+          <label><input type="checkbox" name="benefits" value="Unbefristeter Vertrag"> Unbefristeter Vertrag</label>
+          <label><input type="checkbox" name="benefits" value="Kostenloser Parkplatz"> Kostenloser Parkplatz</label>
+        </div>
+        <label for="benefits_sonstiges">Weitere Zusatzleistungen, die oben fehlen? <span class="opt">(optional)</span></label>
+        <input type="text" id="benefits_sonstiges" name="benefits_sonstiges" placeholder="z. B. Zuschuss zum Mittagessen, Kindergartenzuschuss, Tankgutschein">
+      </div>
+
+      <label for="mitarbeiter_vorteile">Möchten Sie zu einzelnen Punkten noch etwas ergänzen? <span class="opt">(optional)</span></label>
+      <div class="help">z. B. „Firmenwagen auch zur privaten Nutzung" oder „Weiterbildung: 5 Tage im Jahr bezahlt"</div>
+      <textarea id="mitarbeiter_vorteile" name="mitarbeiter_vorteile" placeholder="z. B. Firmenwagen auch privat nutzbar, Weiterbildung wird komplett bezahlt, 30 Tage Urlaub + Sonderurlaub bei Umzug"></textarea>
 
       <label for="team_beschreibung">Wie würden Sie Ihr Team kurz beschreiben? <span class="opt">(optional)</span></label>
-      <textarea id="team_beschreibung" name="team_beschreibung"></textarea>
+      <div class="help">Alter, Größe, Stimmung – was ein Bewerber wissen will</div>
+      <textarea id="team_beschreibung" name="team_beschreibung" placeholder="z. B. 8 Kollegen zwischen 22 und 58, wir duzen uns alle, freitags gemeinsames Frühstück, hilfsbereit und ohne Ellbogen"></textarea>
 
       <div class="step-actions">
         <button type="button" class="btn-back">&larr; Zurück</button>
@@ -429,10 +489,10 @@
 
       <label for="bewerbungsweg">Wie sollen sich Bewerber bei Ihnen melden? <span class="opt">(optional)</span></label>
       <div class="help">z. B. per E-Mail, Telefon, Bewerbungsformular</div>
-      <input type="text" id="bewerbungsweg" name="bewerbungsweg">
+      <input type="text" id="bewerbungsweg" name="bewerbungsweg" placeholder="z. B. kurze Nachricht per WhatsApp reicht, kein Anschreiben nötig">
 
       <label for="anmerkungen">Gibt es noch etwas, das wir wissen sollten? <span class="opt">(optional)</span></label>
-      <textarea id="anmerkungen" name="anmerkungen"></textarea>
+      <textarea id="anmerkungen" name="anmerkungen" placeholder="z. B. Bewerber bitte nicht zwischen 12 und 14 Uhr anrufen; wir suchen ausdrücklich auch Wiedereinsteiger"></textarea>
 
       <div class="consent">
         <input type="checkbox" id="consent" name="consent" value="Ja" required>
@@ -536,7 +596,7 @@
 
         <label for="jobtitel_${n}">Wie soll die Stelle heißen? <span class="req">*</span></label>
         <div class="help">z. B. Bürokraft, Elektriker, Verkäuferin (m/w/d)</div>
-        <input type="text" id="jobtitel_${n}" name="jobtitel_${n}" required>
+        <input type="text" id="jobtitel_${n}" name="jobtitel_${n}" placeholder="z. B. Anlagenmechaniker SHK (m/w/d)" required>
 
         <div class="row2">
           <div>
@@ -545,9 +605,14 @@
           </div>
           <div>
             <label for="einsatzort_${n}">Wo arbeitet die Person hauptsächlich? <span class="req">*</span></label>
-            <input type="text" id="einsatzort_${n}" name="einsatzort_${n}" required>
+            <div class="help">Ort oder Umkreis</div>
+            <input type="text" id="einsatzort_${n}" name="einsatzort_${n}" placeholder="z. B. Rheine + Umkreis 50 km" required>
           </div>
         </div>
+
+        <label for="aufgaben_${n}">Was macht die Person konkret? <span class="req">*</span></label>
+        <div class="help">Die 3–5 wichtigsten Aufgaben im Arbeitsalltag</div>
+        <textarea id="aufgaben_${n}" name="aufgaben_${n}" placeholder="z. B.&#10;- Heizungs- und Sanitäranlagen beim Kunden installieren&#10;- Wartung und Reparatur bestehender Anlagen&#10;- Störungsdienst im Wechsel mit den Kollegen" required></textarea>
 
         <label>Welche Art von Anstellung ist das?</label>
         <div class="checkbox-group">
@@ -557,39 +622,54 @@
           <label><input type="checkbox" name="anstellungsart_${n}" value="Unbefristet"> Unbefristet</label>
         </div>
 
+        <label>Wie sind die Arbeitszeiten? <span class="opt">(optional)</span></label>
+        <div class="checkbox-group">
+          <label><input type="checkbox" name="arbeitszeiten_${n}" value="Feste Zeiten"> Feste Zeiten</label>
+          <label><input type="checkbox" name="arbeitszeiten_${n}" value="Gleitzeit"> Gleitzeit</label>
+          <label><input type="checkbox" name="arbeitszeiten_${n}" value="Frühschicht"> Frühschicht</label>
+          <label><input type="checkbox" name="arbeitszeiten_${n}" value="Spätschicht"> Spätschicht</label>
+          <label><input type="checkbox" name="arbeitszeiten_${n}" value="Nachtschicht"> Nachtschicht</label>
+          <label><input type="checkbox" name="arbeitszeiten_${n}" value="Wochenendarbeit"> Wochenendarbeit</label>
+          <label><input type="checkbox" name="arbeitszeiten_${n}" value="Rufbereitschaft"> Rufbereitschaft</label>
+        </div>
+
+        <label for="arbeitszeiten_details_${n}">Details zu den Arbeitszeiten? <span class="opt">(optional)</span></label>
+        <input type="text" id="arbeitszeiten_details_${n}" name="arbeitszeiten_details_${n}" placeholder="z. B. Mo–Fr 7–16 Uhr, 38,5 Std./Woche">
+
         <div class="row2">
           <div>
             <label for="gehalt_${n}">Welche Gehaltsspanne bieten Sie? <span class="opt">(optional)</span></label>
             <div class="help">brutto, pro Jahr — z. B. 45.000–55.000 €</div>
-            <input type="text" id="gehalt_${n}" name="gehalt_${n}">
+            <input type="text" id="gehalt_${n}" name="gehalt_${n}" placeholder="z. B. 38.000–46.000 € oder 18–22 €/Std.">
           </div>
           <div>
             <label for="wann_besetzt_${n}">Wann soll die Stelle besetzt sein? <span class="opt">(optional)</span></label>
             <div class="help">z. B. sofort, in 2 Monaten</div>
-            <input type="text" id="wann_besetzt_${n}" name="wann_besetzt_${n}">
+            <input type="text" id="wann_besetzt_${n}" name="wann_besetzt_${n}" placeholder="z. B. ab sofort">
           </div>
         </div>
 
         <label for="reiseanteil_${n}">Muss die Person viel reisen? <span class="opt">(optional)</span></label>
         <div class="help">z. B. nein, nur regional, deutschlandweit</div>
-        <input type="text" id="reiseanteil_${n}" name="reiseanteil_${n}">
+        <input type="text" id="reiseanteil_${n}" name="reiseanteil_${n}" placeholder="z. B. nur regional, abends zu Hause">
 
         <label for="qualifikation_${n}">Welche Ausbildung oder Erfahrung braucht die Person? <span class="opt">(optional)</span></label>
-        <textarea id="qualifikation_${n}" name="qualifikation_${n}"></textarea>
+        <div class="help">Auch: „keine Vorkenntnisse nötig, wir lernen an"</div>
+        <textarea id="qualifikation_${n}" name="qualifikation_${n}" placeholder="z. B. abgeschlossene Ausbildung im SHK-Bereich – Berufseinsteiger und Quereinsteiger mit handwerklichem Geschick auch willkommen"></textarea>
 
         <label for="fuehrerschein_${n}">Welchen Führerschein braucht die Person? <span class="opt">(optional)</span></label>
-        <input type="text" id="fuehrerschein_${n}" name="fuehrerschein_${n}" placeholder="z. B. Klasse B">
+        <input type="text" id="fuehrerschein_${n}" name="fuehrerschein_${n}" placeholder="z. B. Klasse B (PKW)">
 
         <label for="fachkenntnisse_${n}">Welche Fachkenntnisse sind wichtig? <span class="req">*</span></label>
         <div class="help">z. B. bestimmte Software, Maschinen, Werkzeuge oder Fachgebiete</div>
-        <textarea id="fachkenntnisse_${n}" name="fachkenntnisse_${n}" required></textarea>
+        <textarea id="fachkenntnisse_${n}" name="fachkenntnisse_${n}" placeholder="z. B. Erfahrung mit Wärmepumpen, Installationspläne lesen, sicherer Umgang mit Messtechnik" required></textarea>
 
         <label for="eigenschaften_${n}">Welche Eigenschaften soll die Person mitbringen? <span class="opt">(optional)</span></label>
         <div class="help">z. B. zuverlässig, selbstständig, kundenfreundlich, teamfähig</div>
-        <textarea id="eigenschaften_${n}" name="eigenschaften_${n}"></textarea>
+        <textarea id="eigenschaften_${n}" name="eigenschaften_${n}" placeholder="z. B. zuverlässig, freundlich im Kundenkontakt, arbeitet gern im Team"></textarea>
 
         <label for="sprachkenntnisse_${n}">Werden bestimmte Sprachkenntnisse gebraucht? <span class="opt">(optional)</span></label>
-        <input type="text" id="sprachkenntnisse_${n}" name="sprachkenntnisse_${n}">
+        <input type="text" id="sprachkenntnisse_${n}" name="sprachkenntnisse_${n}" placeholder="z. B. Deutsch für den Kundenkontakt, Englisch von Vorteil">
       </div>`;
   }
 

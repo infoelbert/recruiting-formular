@@ -27,6 +27,13 @@ Du hast bereits eine Google-Tabelle als Seedliste angelegt:
 2. Den kompletten Beispielcode im Editor löschen und stattdessen den Inhalt von
    `apps-script/Code.gs` (aus diesem Paket) einfügen.
 3. Oben speichern (Diskettensymbol / Strg+S). Projektname z. B. „Recruiting Formular Backend".
+
+   > **Hinweis zur Tabellen-ID:** Ganz oben in `Code.gs` steht
+   > `var SPREADSHEET_ID = '1PiGF7BAmBRuYydJd3xUTFPtAH6CA-087IjTJ-UNPdHY';`.
+   > Das Script spricht die Tabelle fest über diese ID an und funktioniert
+   > deshalb auch, wenn es **nicht** an die Tabelle gebunden ist. Falls du
+   > die Seedliste je durch eine andere Tabelle ersetzt, trage hier die neue
+   > ID ein (steht in der Tabellen-URL zwischen `/d/` und `/edit`).
 4. Rechts oben auf **Bereitstellen → Neue Bereitstellung** klicken.
    - Typ auswählen: **Web-App**.
    - „Ausführen als": **Ich (dein Google-Konto)**.
@@ -91,6 +98,24 @@ vollständig ist.
 2. Formular ausfüllen und absenden.
 3. Prüfen: Landet eine neue Zeile in der Google-Tabelle? Kommt eine E-Mail an
    `info.infoelbert@gmail.com` an? Erscheint die Dankeseite?
+
+### Fehlermail „Fehler im Recruiting-Formular"
+
+Wenn du beim Absenden zwar auf der Dankeseite landest, aber statt der normalen
+Benachrichtigung eine Mail mit Betreff **„Fehler im Recruiting-Formular"**
+bekommst, konnte das Script die Tabelle nicht beschreiben. Häufigste Ursachen:
+
+- **Das Script wurde nach der letzten Code-Änderung nicht neu bereitgestellt.**
+  Lösung: **Bereitstellen → Bereitstellungen verwalten → Bearbeiten (Stift) →
+  Version „Neue Version" → Bereitstellen**. Die `/exec`-URL bleibt gleich.
+- **Berechtigungen wurden nie vollständig bestätigt** (Zugriff auf Tabelle +
+  E-Mail). Lösung: im Editor einmal die Funktion `testDoPost` ausführen und den
+  Google-Berechtigungsdialog komplett durchklicken.
+- **Falsche `SPREADSHEET_ID`** in `Code.gs`. Lösung: ID aus der Tabellen-URL
+  (zwischen `/d/` und `/edit`) kopieren und oben im Script eintragen.
+
+Seit der aktuellen Version von `Code.gs` steht der genaue Fehlertext mit im Text
+dieser Mail – der sagt dir, welche der drei Ursachen es ist.
 
 ## Mehrere Stellen pro Anfrage
 
