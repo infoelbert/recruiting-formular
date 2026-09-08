@@ -142,16 +142,29 @@ Die Felder sind in drei Gruppen aufgeteilt, jeweils als Array oben in
 Wenn du ein Formularfeld hinzufügst, entfernst oder umbenennst, musst du **zwei
 Stellen** synchron halten:
 
-1. Das `name="..."`-Attribut des Feldes in `anfrage.html` — bei Stellen-Feldern in
-   sowohl dem festen Block „Stelle 1" als auch in der JavaScript-Funktion
-   `positionBlockHTML(n)` weiter unten in derselben Datei (dort wird der Block für
-   jede weitere hinzugefügte Stelle erzeugt).
+1. Das `name="..."`-Attribut des Feldes in `anfrage.html`. Stellen-Felder stehen
+   **einmal** in der Vorlage `<template id="positionTpl">` (weiter unten in der
+   Datei); der Platzhalter `{{N}}` im Feldnamen wird beim Einfügen einer Stelle
+   automatisch durch die Stellen-Nummer ersetzt. Es gibt keinen separaten „Stelle 1"-
+   Block mehr — Stelle 1 wird beim Laden aus derselben Vorlage erzeugt.
 2. Den passenden Eintrag in `COMPANY_FIELDS`, `POSITION_FIELDS` oder
-   `FOLLOWUP_FIELDS` in `apps-script/Code.gs` (gleicher `key`).
+   `FOLLOWUP_FIELDS` in `apps-script/Code.gs` (gleicher `key`). Checkbox-Gruppen
+   brauchen `multi: true`. Mit `section: '...'` setzt du eine Zwischenüberschrift
+   in der Benachrichtigungs-E-Mail.
 
-Willst du mehr oder weniger als 5 Stellen pro Anfrage erlauben, ändere die Zahl an
-beiden Stellen: die Konstante `MAX_POSITIONS` im `<script>`-Teil von `anfrage.html`
-**und** `MAX_POSITIONS` ganz oben in `apps-script/Code.gs` (müssen immer gleich sein).
+Bedingte Felder (z. B. „Bitte Zielgruppe kurz beschreiben", das nur bei Auswahl
+„Sonstige" erscheint) werden über einen `<div class="cond" data-cond-field="..."
+data-cond-kind="..." data-cond-value="...">`-Wrapper gesteuert. Pflichtfelder darin
+tragen `data-req-when-shown` und werden nur validiert, solange sie sichtbar sind.
+
+Die maximale Stellenzahl steht als `MAX_POSITIONS` im `<script>`-Teil von
+`anfrage.html`. In `apps-script/Code.gs` liest `SCAN_LIMIT` (bewusst großzügig)
+die Stellen-Suffixe `_1 … _N` ein — die Nummerierung kann nach Hinzufügen/Entfernen
+Lücken haben.
+
+Die Kopfzeile der Tabelle wird bei jeder Einreichung automatisch mit dem aktuellen
+Spaltenstand abgeglichen (`ensureHeaders_`), du musst sie nach Feld-Änderungen also
+nicht von Hand anpassen.
 
 Nach jeder Änderung am Apps Script im Editor erneut **Bereitstellen →
 Bereitstellungen verwalten → Bearbeiten (Stift-Symbol) → Neue Version →

@@ -24,6 +24,7 @@
     --error:#e08a7a;
   }
   *{box-sizing:border-box;}
+  [hidden]{display:none!important;}
   body{
     margin:0;
     font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
@@ -79,16 +80,19 @@
     color:var(--ink);
   }
 
-  label{
+  label,
+  .q-label{
     display:block;
     font-size:.95rem;
     font-weight:600;
     margin:20px 0 6px;
     color:var(--ink);
   }
-  label:first-of-type{margin-top:0;}
-  label .opt{font-weight:400;color:var(--muted);}
-  label .req{color:var(--accent);}
+  .step > label:first-of-type,
+  .step > .q-label:first-of-type,
+  .position-block > label:first-of-type{margin-top:0;}
+  label .opt, .q-label .opt{font-weight:400;color:var(--muted);}
+  label .req, .q-label .req{color:var(--accent);}
   .help{
     font-size:.85rem;
     color:var(--muted);
@@ -121,12 +125,27 @@
   @media (max-width:560px){
     .row2{grid-template-columns:1fr;}
   }
+
   .checkbox-group{display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:8px;}
   .checkbox-group label{
     display:flex;align-items:center;gap:8px;
     font-weight:400;font-size:.95rem;margin:0;color:var(--ink);
+    min-height:24px;
   }
-  .checkbox-group input{width:auto;margin:0;accent-color:var(--accent);}
+  .checkbox-group input{width:auto;margin:0;accent-color:var(--accent);flex:none;}
+
+  .choice-list{display:flex;flex-direction:column;gap:8px;margin-top:8px;}
+  .choice-list label{
+    display:flex;align-items:flex-start;gap:10px;margin:0;font-weight:400;font-size:.95rem;color:var(--ink);
+    border:1px solid var(--line-soft);border-radius:8px;padding:11px 13px;cursor:pointer;
+  }
+  .choice-list label:hover{border-color:var(--line);}
+  .choice-list input{width:auto;margin:2px 0 0;accent-color:var(--accent);flex:none;}
+
+  .subsection{
+    font-weight:700;color:var(--accent);font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;
+    margin:30px 0 4px;padding-top:16px;border-top:1px solid var(--line-soft);
+  }
 
   .positions-intro{
     font-size:.85rem;
@@ -137,9 +156,10 @@
     background:var(--panel);
     border:1px solid var(--line-soft);
     border-radius:12px;
-    padding:20px 18px 6px;
+    padding:20px 18px 10px;
     margin-bottom:18px;
   }
+  .position-block .subsection:first-of-type{border-top:none;padding-top:4px;margin-top:22px;}
   .position-header{
     display:flex;
     align-items:center;
@@ -182,7 +202,6 @@
     color:var(--muted);
     text-align:center;
     margin:-2px 0 10px;
-    display:none;
   }
 
   .highlight-question{
@@ -194,6 +213,19 @@
     margin-bottom:6px;
   }
 
+  .cond{margin-top:2px;}
+  .info-note{
+    background:var(--panel);border:1px solid var(--line-soft);border-left:3px solid var(--accent);
+    border-radius:8px;padding:12px 14px;font-size:.86rem;color:var(--muted);margin-top:10px;
+  }
+
+  .check-line{
+    display:flex;gap:10px;align-items:flex-start;background:var(--panel);border:1px solid var(--line-soft);
+    border-radius:10px;padding:14px;margin-top:14px;
+  }
+  .check-line input{width:auto;margin-top:3px;accent-color:var(--accent);flex:none;}
+  .check-line label{margin:0;font-weight:400;font-size:.88rem;color:var(--muted);}
+
   .consent{
     display:flex;
     gap:10px;
@@ -204,11 +236,17 @@
     padding:16px;
     margin-top:20px;
   }
-  .consent input{width:auto;margin-top:3px;accent-color:var(--accent);}
+  .consent input{width:auto;margin-top:3px;accent-color:var(--accent);flex:none;}
   .consent label{margin:0;font-weight:400;font-size:.88rem;color:var(--muted);}
   .consent a{color:var(--accent);}
 
-  .honeypot{position:absolute;left:-9999px;top:-9999px;opacity:0;height:0;overflow:hidden;}
+  .field-error{color:var(--error);font-size:.82rem;font-weight:600;margin:6px 0 0;}
+  .invalid{border-color:var(--error)!important;}
+  .group-invalid{outline:1px solid var(--error);outline-offset:5px;border-radius:8px;}
+
+  /* Honeypot: fuer echte Nutzer unsichtbar und nicht fokussierbar, aber im DOM fuer Bots. */
+  .hp{position:absolute!important;left:-9999px!important;top:-9999px!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+  .hp *{pointer-events:none;}
 
   .step-actions{
     display:flex;
@@ -249,6 +287,10 @@
     font-size:.9rem;
     margin-bottom:16px;
   }
+  .noscript-note{
+    background:rgba(224,138,122,.12);border:1px solid rgba(224,138,122,.4);color:var(--error);
+    padding:14px 16px;border-radius:8px;font-size:.9rem;margin-top:20px;
+  }
 </style>
 </head>
 <body>
@@ -266,60 +308,78 @@
     <h1>Schön, dass wir gesprochen haben</h1>
     <p>
       Damit wir direkt mit Ihrer Recruiting-Kampagne starten können, brauchen wir nur noch
-      ein paar Details zu Ihrem Betrieb und der offenen Stelle von Ihnen. Dauert etwa 5 Minuten.
+      ein paar Details zu Ihrem Betrieb und der offenen Stelle von Ihnen. Dauert etwa 8–10 Minuten.
     </p>
   </div>
 
+  <noscript>
+    <p class="noscript-note">Für dieses Formular wird JavaScript benötigt. Bitte aktivieren Sie JavaScript
+    oder schreiben Sie uns direkt an <a href="mailto:info.infoelbert@gmail.com">info.infoelbert@gmail.com</a>.</p>
+  </noscript>
+
   <div id="form-error">Bitte füllen Sie die markierten Felder aus, bevor Sie weitergehen.</div>
 
-  <!-- Sendet die Daten direkt an das Google Apps Script, das an die Seedliste-Tabelle
-       gebunden ist. Der versteckte iframe verhindert CORS-Probleme. Siehe README.md. -->
-  <form id="recruitingForm" action="https://script.google.com/macros/s/AKfycby1oWoGmpfGeApmBXlJDf26iUKJEY1mlYbNg4_Riw3COkQMZtUyxdWnKEW6O32BKH6aDw/exec" method="POST" target="hidden_iframe">
+  <!-- Sendet die Daten direkt an das Google Apps Script (Seedliste-Tabelle + E-Mail).
+       Der versteckte iframe verhindert CORS-Probleme. Siehe README.md. -->
+  <form id="recruitingForm" action="https://script.google.com/macros/s/AKfycby1oWoGmpfGeApmBXlJDf26iUKJEY1mlYbNg4_Riw3COkQMZtUyxdWnKEW6O32BKH6aDw/exec" method="POST" target="hidden_iframe" novalidate>
 
     <!-- Für echte Besucher unsichtbar. Füllt nur Spam-Software aus. -->
-    <div class="honeypot" aria-hidden="true">
-      <label for="website">Website</label>
+    <div class="hp" aria-hidden="true">
+      <label for="website" tabindex="-1">Website (bitte frei lassen)</label>
       <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
     </div>
 
     <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
     <div class="progress-label" id="progressLabel">Schritt 1 von 4</div>
 
-    <!-- SCHRITT 1 -->
+    <!-- ================= SCHRITT 1 ================= -->
     <div class="step active" data-step="1">
       <h2>Ihr Unternehmen</h2>
 
       <label for="firmenname">Wie heißt Ihr Unternehmen? <span class="req">*</span></label>
       <input type="text" id="firmenname" name="firmenname" placeholder="z. B. Mustermann GmbH" required>
+      <p class="field-error" data-error-for="firmenname" hidden></p>
 
       <label for="branche">Was für ein Betrieb sind Sie? <span class="req">*</span></label>
       <div class="help">z. B. Handwerk, Handel, Gastronomie, Büro, Industrie</div>
       <input type="text" id="branche" name="branche" placeholder="z. B. Sanitär- und Heizungsbau" required>
+      <p class="field-error" data-error-for="branche" hidden></p>
 
       <label for="firmensitz">Wo hat Ihr Unternehmen seinen Sitz? <span class="req">*</span></label>
       <div class="help">PLZ und Ort reichen aus</div>
       <input type="text" id="firmensitz" name="firmensitz" placeholder="z. B. 48431 Rheine" required>
+      <p class="field-error" data-error-for="firmensitz" hidden></p>
 
-      <label for="firmengroesse">Wie viele Mitarbeiter hat Ihr Unternehmen? <span class="opt">(optional)</span></label>
-      <input type="text" id="firmengroesse" name="firmengroesse" placeholder="z. B. 25 Mitarbeiter">
+      <label for="firmengroesse">Wie groß ist Ihr Unternehmen? <span class="opt">(optional)</span></label>
+      <select id="firmengroesse" name="firmengroesse">
+        <option value="">Bitte auswählen</option>
+        <option value="1–9 Mitarbeitende">1–9 Mitarbeitende</option>
+        <option value="10–49 Mitarbeitende">10–49 Mitarbeitende</option>
+        <option value="50–249 Mitarbeitende">50–249 Mitarbeitende</option>
+        <option value="250–999 Mitarbeitende">250–999 Mitarbeitende</option>
+        <option value="1.000+ Mitarbeitende">1.000+ Mitarbeitende</option>
+      </select>
 
       <label for="firma_web">Website &amp; Social-Media-Links Ihrer Firma <span class="opt">(optional)</span></label>
-      <div class="help">Website, Instagram, Facebook – hilft uns bei Bildern und der Ansprache der Bewerber.</div>
+      <div class="help">Website, Instagram, Facebook, Google-Unternehmensprofil, Kununu oder Karriere-Seite – hilft uns bei Recherche, Bildern und der Ansprache von Bewerbern.</div>
       <textarea id="firma_web" name="firma_web" placeholder="z. B. www.mustermann-gmbh.de, instagram.com/mustermann_gmbh"></textarea>
 
       <div class="row2">
         <div>
           <label for="ansprechpartner_name">Wie heißen Sie? <span class="req">*</span></label>
           <input type="text" id="ansprechpartner_name" name="ansprechpartner_name" placeholder="z. B. Anna Mustermann" required>
+          <p class="field-error" data-error-for="ansprechpartner_name" hidden></p>
         </div>
         <div>
           <label for="ansprechpartner_telefon">Ihre Telefonnummer <span class="req">*</span></label>
           <input type="tel" id="ansprechpartner_telefon" name="ansprechpartner_telefon" placeholder="z. B. 0171 2345678" required>
+          <p class="field-error" data-error-for="ansprechpartner_telefon" hidden></p>
         </div>
       </div>
 
       <label for="ansprechpartner_email">Ihre E-Mail-Adresse <span class="req">*</span></label>
       <input type="email" id="ansprechpartner_email" name="ansprechpartner_email" placeholder="z. B. anna@mustermann-gmbh.de" required>
+      <p class="field-error" data-error-for="ansprechpartner_email" hidden></p>
 
       <div class="step-actions">
         <span></span>
@@ -327,99 +387,15 @@
       </div>
     </div>
 
-    <!-- SCHRITT 2 -->
+    <!-- ================= SCHRITT 2 ================= -->
     <div class="step" data-step="2">
       <h2>Ihre offene(n) Stelle(n)</h2>
-      <p class="positions-intro">Haben Sie mehr als eine Stelle zu besetzen — auch unterschiedliche Berufe? Fügen Sie einfach weitere hinzu.</p>
+      <p class="positions-intro">Haben Sie mehr als eine Stelle zu besetzen — auch unterschiedliche Berufe? Fügen Sie einfach weitere hinzu. Die Angaben werden pro Stelle erfasst.</p>
 
-      <div id="positionsContainer">
-        <div class="position-block" data-position="1">
-          <div class="position-header">
-            <p class="position-heading">Stelle 1</p>
-            <button type="button" class="btn-remove-position" data-target="1" style="display:none;">Entfernen</button>
-          </div>
-
-          <label for="jobtitel_1">Wie soll die Stelle heißen? <span class="req">*</span></label>
-          <div class="help">z. B. Bürokraft, Elektriker, Verkäuferin (m/w/d)</div>
-          <input type="text" id="jobtitel_1" name="jobtitel_1" placeholder="z. B. Anlagenmechaniker SHK (m/w/d)" required>
-
-          <div class="row2">
-            <div>
-              <label for="anzahl_stellen_1">Wie viele Stellen sind offen?</label>
-              <input type="number" id="anzahl_stellen_1" name="anzahl_stellen_1" min="1" value="1">
-            </div>
-            <div>
-              <label for="einsatzort_1">Wo arbeitet die Person hauptsächlich? <span class="req">*</span></label>
-              <div class="help">Ort oder Umkreis</div>
-              <input type="text" id="einsatzort_1" name="einsatzort_1" placeholder="z. B. Rheine + Umkreis 50 km" required>
-            </div>
-          </div>
-
-          <label for="aufgaben_1">Was macht die Person konkret? <span class="req">*</span></label>
-          <div class="help">Die 3–5 wichtigsten Aufgaben im Arbeitsalltag</div>
-          <textarea id="aufgaben_1" name="aufgaben_1" placeholder="z. B.&#10;- Heizungs- und Sanitäranlagen beim Kunden installieren&#10;- Wartung und Reparatur bestehender Anlagen&#10;- Störungsdienst im Wechsel mit den Kollegen" required></textarea>
-
-          <label>Welche Art von Anstellung ist das?</label>
-          <div class="checkbox-group">
-            <label><input type="checkbox" name="anstellungsart_1" value="Vollzeit"> Vollzeit</label>
-            <label><input type="checkbox" name="anstellungsart_1" value="Teilzeit"> Teilzeit</label>
-            <label><input type="checkbox" name="anstellungsart_1" value="Befristet"> Befristet</label>
-            <label><input type="checkbox" name="anstellungsart_1" value="Unbefristet"> Unbefristet</label>
-          </div>
-
-          <label>Wie sind die Arbeitszeiten? <span class="opt">(optional)</span></label>
-          <div class="checkbox-group">
-            <label><input type="checkbox" name="arbeitszeiten_1" value="Feste Zeiten"> Feste Zeiten</label>
-            <label><input type="checkbox" name="arbeitszeiten_1" value="Gleitzeit"> Gleitzeit</label>
-            <label><input type="checkbox" name="arbeitszeiten_1" value="Frühschicht"> Frühschicht</label>
-            <label><input type="checkbox" name="arbeitszeiten_1" value="Spätschicht"> Spätschicht</label>
-            <label><input type="checkbox" name="arbeitszeiten_1" value="Nachtschicht"> Nachtschicht</label>
-            <label><input type="checkbox" name="arbeitszeiten_1" value="Wochenendarbeit"> Wochenendarbeit</label>
-            <label><input type="checkbox" name="arbeitszeiten_1" value="Rufbereitschaft"> Rufbereitschaft</label>
-          </div>
-
-          <label for="arbeitszeiten_details_1">Details zu den Arbeitszeiten? <span class="opt">(optional)</span></label>
-          <input type="text" id="arbeitszeiten_details_1" name="arbeitszeiten_details_1" placeholder="z. B. Mo–Fr 7–16 Uhr, 38,5 Std./Woche">
-
-          <div class="row2">
-            <div>
-              <label for="gehalt_1">Welche Gehaltsspanne bieten Sie? <span class="opt">(optional)</span></label>
-              <div class="help">brutto, pro Jahr — z. B. 45.000–55.000 €</div>
-              <input type="text" id="gehalt_1" name="gehalt_1" placeholder="z. B. 38.000–46.000 € oder 18–22 €/Std.">
-            </div>
-            <div>
-              <label for="wann_besetzt_1">Wann soll die Stelle besetzt sein? <span class="opt">(optional)</span></label>
-              <div class="help">z. B. sofort, in 2 Monaten</div>
-              <input type="text" id="wann_besetzt_1" name="wann_besetzt_1" placeholder="z. B. ab sofort">
-            </div>
-          </div>
-
-          <label for="reiseanteil_1">Muss die Person viel reisen? <span class="opt">(optional)</span></label>
-          <div class="help">z. B. nein, nur regional, deutschlandweit</div>
-          <input type="text" id="reiseanteil_1" name="reiseanteil_1" placeholder="z. B. nur regional, abends zu Hause">
-
-          <label for="qualifikation_1">Welche Ausbildung oder Erfahrung braucht die Person? <span class="opt">(optional)</span></label>
-          <div class="help">Auch: „keine Vorkenntnisse nötig, wir lernen an"</div>
-          <textarea id="qualifikation_1" name="qualifikation_1" placeholder="z. B. abgeschlossene Ausbildung im SHK-Bereich – Berufseinsteiger und Quereinsteiger mit handwerklichem Geschick auch willkommen"></textarea>
-
-          <label for="fuehrerschein_1">Welchen Führerschein braucht die Person? <span class="opt">(optional)</span></label>
-          <input type="text" id="fuehrerschein_1" name="fuehrerschein_1" placeholder="z. B. Klasse B (PKW)">
-
-          <label for="fachkenntnisse_1">Welche Fachkenntnisse sind wichtig? <span class="req">*</span></label>
-          <div class="help">z. B. bestimmte Software, Maschinen, Werkzeuge oder Fachgebiete</div>
-          <textarea id="fachkenntnisse_1" name="fachkenntnisse_1" placeholder="z. B. Erfahrung mit Wärmepumpen, Installationspläne lesen, sicherer Umgang mit Messtechnik" required></textarea>
-
-          <label for="eigenschaften_1">Welche Eigenschaften soll die Person mitbringen? <span class="opt">(optional)</span></label>
-          <div class="help">z. B. zuverlässig, selbstständig, kundenfreundlich, teamfähig</div>
-          <textarea id="eigenschaften_1" name="eigenschaften_1" placeholder="z. B. zuverlässig, freundlich im Kundenkontakt, arbeitet gern im Team"></textarea>
-
-          <label for="sprachkenntnisse_1">Werden bestimmte Sprachkenntnisse gebraucht? <span class="opt">(optional)</span></label>
-          <input type="text" id="sprachkenntnisse_1" name="sprachkenntnisse_1" placeholder="z. B. Deutsch für den Kundenkontakt, Englisch von Vorteil">
-        </div>
-      </div>
+      <div id="positionsContainer"></div>
 
       <button type="button" id="addPositionBtn" class="btn-add-position">+ Weitere Stelle hinzufügen</button>
-      <p class="positions-cap-note" id="positionsCapNote">Mehr als 5 Stellen? Melden Sie sich gerne direkt bei uns.</p>
+      <p class="positions-cap-note" id="positionsCapNote" hidden>Mehr als 5 Stellen? Melden Sie sich gerne direkt bei uns.</p>
 
       <div class="step-actions">
         <button type="button" class="btn-back">&larr; Zurück</button>
@@ -427,15 +403,16 @@
       </div>
     </div>
 
-    <!-- SCHRITT 3 -->
+    <!-- ================= SCHRITT 3 ================= -->
     <div class="step" data-step="3">
       <h2>Warum bei Ihnen arbeiten?</h2>
       <p class="help" style="margin-bottom:18px;">Diese Angaben sind besonders wichtig — sie entscheiden, ob sich jemand bei Ihnen bewirbt.</p>
 
       <div class="highlight-question">
-        <label for="warum_wir">Warum sollten sich Bewerber für Sie entscheiden? <span class="req">*</span></label>
-        <div class="help">Was macht die Arbeit bei Ihnen besser als beim Wettbewerb? Ruhig ehrlich und konkret.</div>
-        <textarea id="warum_wir" name="warum_wir" placeholder="z. B. familiäres Team, moderne Werkzeuge und Fahrzeuge, feste Auftragslage in der Region, pünktliche Löhne, kurze Wege – der Chef packt selbst mit an" required></textarea>
+        <label for="warum_wir">Nennen Sie bitte 3 konkrete Gründe, warum Bewerber bei Ihnen arbeiten sollten. <span class="req">*</span></label>
+        <div class="help">Was ist bei Ihnen besser als bei anderen Arbeitgebern? Zum Beispiel: planbare Arbeitszeiten, moderne Ausstattung, kurze Wege, sichere Auftragslage, familiäres Team oder schnelle Verantwortung.</div>
+        <textarea id="warum_wir" name="warum_wir" placeholder="z. B.&#10;1. Planbare Arbeitszeiten, kaum Überstunden&#10;2. Moderne Fahrzeuge und Werkzeuge&#10;3. Familiäres Team, der Chef packt selbst mit an" required></textarea>
+        <p class="field-error" data-error-for="warum_wir" hidden></p>
       </div>
 
       <label for="urlaubstage">Wie viele Urlaubstage bieten Sie? <span class="opt">(optional)</span></label>
@@ -443,7 +420,7 @@
       <input type="text" id="urlaubstage" name="urlaubstage" placeholder="z. B. 30 Tage">
 
       <div class="highlight-question">
-        <label>Welche Zusatzleistungen bieten Sie? <span class="opt">(optional)</span></label>
+        <span class="q-label">Welche Zusatzleistungen bieten Sie? <span class="opt">(optional)</span></span>
         <div class="help">Alles ankreuzen, was zutrifft — das sind die Punkte, mit denen wir in der Anzeige werben.</div>
         <div class="checkbox-group">
           <label><input type="checkbox" name="benefits" value="Betriebliche Altersvorsorge"> Betriebliche Altersvorsorge</label>
@@ -464,6 +441,8 @@
           <label><input type="checkbox" name="benefits" value="Firmenevents / Teamausflüge"> Firmenevents / Teamausflüge</label>
           <label><input type="checkbox" name="benefits" value="Unbefristeter Vertrag"> Unbefristeter Vertrag</label>
           <label><input type="checkbox" name="benefits" value="Kostenloser Parkplatz"> Kostenloser Parkplatz</label>
+          <label><input type="checkbox" name="benefits" value="Mitarbeiterrabatte / Sachbezüge"> Mitarbeiterrabatte / Sachbezüge</label>
+          <label><input type="checkbox" name="benefits" value="Familienfreundliche Regelungen / flexible Betreuung"> Familienfreundliche Regelungen / flexible Betreuung</label>
         </div>
         <label for="benefits_sonstiges">Weitere Zusatzleistungen, die oben fehlen? <span class="opt">(optional)</span></label>
         <input type="text" id="benefits_sonstiges" name="benefits_sonstiges" placeholder="z. B. Zuschuss zum Mittagessen, Kindergartenzuschuss, Tankgutschein">
@@ -471,10 +450,10 @@
 
       <label for="mitarbeiter_vorteile">Möchten Sie zu einzelnen Punkten noch etwas ergänzen? <span class="opt">(optional)</span></label>
       <div class="help">z. B. „Firmenwagen auch zur privaten Nutzung" oder „Weiterbildung: 5 Tage im Jahr bezahlt"</div>
-      <textarea id="mitarbeiter_vorteile" name="mitarbeiter_vorteile" placeholder="z. B. Firmenwagen auch privat nutzbar, Weiterbildung wird komplett bezahlt, 30 Tage Urlaub + Sonderurlaub bei Umzug"></textarea>
+      <textarea id="mitarbeiter_vorteile" name="mitarbeiter_vorteile" placeholder="z. B. Firmenwagen auch privat nutzbar, Weiterbildung wird komplett bezahlt, Sonderurlaub bei Umzug"></textarea>
 
       <label for="team_beschreibung">Wie würden Sie Ihr Team kurz beschreiben? <span class="opt">(optional)</span></label>
-      <div class="help">Alter, Größe, Stimmung – was ein Bewerber wissen will</div>
+      <div class="help">Zum Beispiel Teamgröße, Zusammenarbeit, Umgangston, Altersmix oder gemeinsame Rituale.</div>
       <textarea id="team_beschreibung" name="team_beschreibung" placeholder="z. B. 8 Kollegen zwischen 22 und 58, wir duzen uns alle, freitags gemeinsames Frühstück, hilfsbereit und ohne Ellbogen"></textarea>
 
       <div class="step-actions">
@@ -483,24 +462,130 @@
       </div>
     </div>
 
-    <!-- SCHRITT 5 -->
+    <!-- ================= SCHRITT 4 ================= -->
     <div class="step" data-step="4">
-      <h2>Fast fertig</h2>
+      <h2>Bewerbung &amp; Freigabe</h2>
 
-      <label for="bewerbungsweg">Wie sollen sich Bewerber bei Ihnen melden? <span class="opt">(optional)</span></label>
-      <div class="help">z. B. per E-Mail, Telefon, Bewerbungsformular</div>
-      <input type="text" id="bewerbungsweg" name="bewerbungsweg" placeholder="z. B. kurze Nachricht per WhatsApp reicht, kein Anschreiben nötig">
+      <div class="subsection">Bewerbungsweg</div>
+      <span class="q-label">Über welche Wege sollen sich Bewerber melden? <span class="req">*</span></span>
+      <div class="checkbox-group" data-group-req="min1" data-group-name="bewerbungsweg">
+        <label><input type="checkbox" name="bewerbungsweg" value="WhatsApp"> WhatsApp</label>
+        <label><input type="checkbox" name="bewerbungsweg" value="Telefon"> Telefon</label>
+        <label><input type="checkbox" name="bewerbungsweg" value="Rückrufformular"> Rückrufformular</label>
+        <label><input type="checkbox" name="bewerbungsweg" value="E-Mail"> E-Mail</label>
+        <label><input type="checkbox" name="bewerbungsweg" value="Karriereportal / Bewerbungsportal"> Karriereportal / Bewerbungsportal</label>
+        <label><input type="checkbox" name="bewerbungsweg" value="Sonstiges"> Sonstiges</label>
+      </div>
+      <p class="field-error" data-error-for="bewerbungsweg" hidden></p>
+      <div class="cond" data-cond-field="bewerbungsweg" data-cond-kind="checkbox-includes" data-cond-value="Sonstiges" hidden>
+        <label for="bewerbungsweg_sonstige">Bitte kurz beschreiben</label>
+        <input type="text" id="bewerbungsweg_sonstige" name="bewerbungsweg_sonstige" data-req-when-shown>
+        <p class="field-error" data-error-for="bewerbungsweg_sonstige" hidden></p>
+      </div>
 
+      <div class="subsection">Bewerbungen bearbeiten</div>
+      <label for="bewerbung_kontakt_name">Wer ist für Bewerbungen zuständig? <span class="req">*</span></label>
+      <input type="text" id="bewerbung_kontakt_name" name="bewerbung_kontakt_name" placeholder="z. B. Anna Mustermann" required>
+      <p class="field-error" data-error-for="bewerbung_kontakt_name" hidden></p>
+      <div class="row2">
+        <div>
+          <label for="bewerbung_kontakt_telefon">Telefonnummer für Bewerber <span class="req">*</span></label>
+          <input type="tel" id="bewerbung_kontakt_telefon" name="bewerbung_kontakt_telefon" placeholder="z. B. 0171 2345678" required>
+          <p class="field-error" data-error-for="bewerbung_kontakt_telefon" hidden></p>
+        </div>
+        <div>
+          <label for="bewerbung_kontakt_email">E-Mail-Adresse für Bewerber <span class="req">*</span></label>
+          <input type="email" id="bewerbung_kontakt_email" name="bewerbung_kontakt_email" placeholder="z. B. bewerbung@mustermann-gmbh.de" required>
+          <p class="field-error" data-error-for="bewerbung_kontakt_email" hidden></p>
+        </div>
+      </div>
+      <label for="bewerbung_kontakt_zeiten">Zu welchen Zeiten ist die Person am besten erreichbar? <span class="opt">(optional)</span></label>
+      <input type="text" id="bewerbung_kontakt_zeiten" name="bewerbung_kontakt_zeiten" placeholder="z. B. Mo–Fr 8–12 Uhr">
+
+      <label for="reaktionszeit">Wie schnell kann auf neue Bewerbungen reagiert werden? <span class="req">*</span></label>
+      <select id="reaktionszeit" name="reaktionszeit" required>
+        <option value="">Bitte auswählen</option>
+        <option value="Innerhalb von 2 Stunden">Innerhalb von 2 Stunden</option>
+        <option value="Am selben Werktag">Am selben Werktag</option>
+        <option value="Innerhalb von 24 Stunden">Innerhalb von 24 Stunden</option>
+        <option value="Innerhalb von 48 Stunden">Innerhalb von 48 Stunden</option>
+        <option value="Länger als 48 Stunden">Länger als 48 Stunden</option>
+        <option value="Bitte im Kick-off-Call klären">Bitte im Kick-off-Call klären</option>
+      </select>
+      <p class="field-error" data-error-for="reaktionszeit" hidden></p>
+
+      <span class="q-label">Wie läuft die Auswahl nach einer Bewerbung normalerweise ab? <span class="opt">(optional)</span></span>
+      <div class="checkbox-group">
+        <label><input type="checkbox" name="auswahlprozess" value="Kurzes Telefonat"> Kurzes Telefonat</label>
+        <label><input type="checkbox" name="auswahlprozess" value="Persönliches Kennenlernen"> Persönliches Kennenlernen</label>
+        <label><input type="checkbox" name="auswahlprozess" value="Videocall"> Videocall</label>
+        <label><input type="checkbox" name="auswahlprozess" value="Gespräch mit Führungskraft"> Gespräch mit Führungskraft</label>
+        <label><input type="checkbox" name="auswahlprozess" value="Probearbeit / Schnuppertag"> Probearbeit / Schnuppertag</label>
+        <label><input type="checkbox" name="auswahlprozess" value="Zweites Gespräch"> Zweites Gespräch</label>
+        <label><input type="checkbox" name="auswahlprozess" value="Sonstiges"> Sonstiges</label>
+      </div>
+      <div class="cond" data-cond-field="auswahlprozess" data-cond-kind="checkbox-includes" data-cond-value="Sonstiges" hidden>
+        <label for="auswahlprozess_sonstige">Bitte kurz beschreiben</label>
+        <input type="text" id="auswahlprozess_sonstige" name="auswahlprozess_sonstige" data-req-when-shown>
+        <p class="field-error" data-error-for="auswahlprozess_sonstige" hidden></p>
+      </div>
+
+      <div class="subsection">Freigabe der Kampagne</div>
+      <label for="freigabe_name">Wer gibt Texte und Anzeigen final frei? <span class="req">*</span></label>
+      <input type="text" id="freigabe_name" name="freigabe_name" placeholder="z. B. Thomas Mustermann" required>
+      <p class="field-error" data-error-for="freigabe_name" hidden></p>
+      <div class="row2">
+        <div>
+          <label for="freigabe_rolle">Funktion / Rolle <span class="req">*</span></label>
+          <input type="text" id="freigabe_rolle" name="freigabe_rolle" placeholder="z. B. Geschäftsführung, Personal, Standortleitung" required>
+          <p class="field-error" data-error-for="freigabe_rolle" hidden></p>
+        </div>
+        <div>
+          <label for="freigabe_email">E-Mail-Adresse für die Freigabe <span class="req">*</span></label>
+          <input type="email" id="freigabe_email" name="freigabe_email" placeholder="z. B. thomas@mustermann-gmbh.de" required>
+          <p class="field-error" data-error-for="freigabe_email" hidden></p>
+        </div>
+      </div>
+      <label for="freigabe_telefon">Telefonnummer für Rückfragen zur Freigabe <span class="opt">(optional)</span></label>
+      <input type="tel" id="freigabe_telefon" name="freigabe_telefon" placeholder="z. B. 0171 2345678">
+      <div class="check-line">
+        <input type="checkbox" id="freigabe_berechtigt" name="freigabe_berechtigt" value="Ja" data-check-req>
+        <label for="freigabe_berechtigt">Die genannte Person ist berechtigt, die Kampagne und die verwendeten Inhalte freizugeben. <span class="req">*</span></label>
+      </div>
+      <p class="field-error" data-error-for="freigabe_berechtigt" hidden></p>
+
+      <div class="subsection">Bilder und Videos für die Kampagne</div>
+      <span class="q-label">Gibt es bereits Foto- oder Videomaterial aus Ihrem Betrieb? <span class="req">*</span></span>
+      <div class="choice-list" data-group-req="one" data-group-name="material_vorhanden">
+        <label><input type="radio" name="material_vorhanden" value="Ja, wir können Material bereitstellen"> Ja, wir können Material bereitstellen</label>
+        <label><input type="radio" name="material_vorhanden" value="Ja, wir senden einen Link nach"> Ja, wir senden einen Link nach</label>
+        <label><input type="radio" name="material_vorhanden" value="Nein, Materialproduktion bitte im Kick-off-Call besprechen"> Nein, Materialproduktion bitte im Kick-off-Call besprechen</label>
+        <label><input type="radio" name="material_vorhanden" value="Noch offen / bitte im Kick-off-Call klären"> Noch offen / bitte im Kick-off-Call klären</label>
+      </div>
+      <p class="field-error" data-error-for="material_vorhanden" hidden></p>
+      <div class="cond" data-cond-field="material_vorhanden" data-cond-kind="radio-equals" data-cond-value="Ja, wir können Material bereitstellen" hidden>
+        <div class="info-note">Nach dem Absenden erhalten Sie von uns einen sicheren Upload-Link per E-Mail, über den Sie Bilder und Videos hochladen können.</div>
+      </div>
+      <div class="cond" data-cond-field="material_vorhanden" data-cond-kind="radio-startswith" data-cond-value="Ja" hidden>
+        <div class="check-line">
+          <input type="checkbox" id="material_rechte" name="material_rechte" value="Ja" data-check-req data-req-when-shown>
+          <label for="material_rechte">Ich bestätige, dass unser Unternehmen die erforderlichen Rechte an den bereitgestellten Bildern und Videos besitzt und Elbert Marketing diese für die vereinbarte Recruiting-Kampagne verwenden darf. <span class="req">*</span></label>
+        </div>
+        <p class="field-error" data-error-for="material_rechte" hidden></p>
+      </div>
+
+      <div class="subsection">Abschluss</div>
       <label for="anmerkungen">Gibt es noch etwas, das wir wissen sollten? <span class="opt">(optional)</span></label>
       <textarea id="anmerkungen" name="anmerkungen" placeholder="z. B. Bewerber bitte nicht zwischen 12 und 14 Uhr anrufen; wir suchen ausdrücklich auch Wiedereinsteiger"></textarea>
 
       <div class="consent">
-        <input type="checkbox" id="consent" name="consent" value="Ja" required>
+        <input type="checkbox" id="consent" name="consent" value="Ja" data-check-req required>
         <label for="consent">
           Ich bin einverstanden, dass meine Angaben zur Bearbeitung dieser Anfrage gespeichert werden.
           <a href="https://elbert-marketing.de/datenschutz" target="_blank" rel="noopener">Datenschutzerklärung</a> <span class="req">*</span>
         </label>
       </div>
+      <p class="field-error" data-error-for="consent" hidden></p>
 
       <div class="step-actions">
         <button type="button" class="btn-back">&larr; Zurück</button>
@@ -509,203 +594,502 @@
     </div>
   </form>
 
-  <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+  <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" title="Verstecktes Übermittlungsziel"></iframe>
 </main>
 
+<!-- Vorlage fuer eine Stelle. {{N}} wird beim Einfuegen durch die Stellen-Nummer ersetzt. -->
+<template id="positionTpl">
+  <div class="position-block" data-position="{{N}}">
+    <div class="position-header">
+      <p class="position-heading">Stelle {{N}}</p>
+      <button type="button" class="btn-remove-position" data-target="{{N}}" hidden>Entfernen</button>
+    </div>
+
+    <label for="jobtitel_{{N}}">Wie soll die Stelle heißen? <span class="req">*</span></label>
+    <div class="help">z. B. Bürokraft, Elektriker, Verkäuferin (m/w/d)</div>
+    <input type="text" id="jobtitel_{{N}}" name="jobtitel_{{N}}" placeholder="z. B. Anlagenmechaniker SHK (m/w/d)" required>
+    <p class="field-error" data-error-for="jobtitel_{{N}}" hidden></p>
+
+    <div class="row2">
+      <div>
+        <label for="anzahl_stellen_{{N}}">Wie viele Stellen sind offen?</label>
+        <input type="number" id="anzahl_stellen_{{N}}" name="anzahl_stellen_{{N}}" min="1" value="1">
+      </div>
+      <div>
+        <label for="einsatzort_{{N}}">Wo arbeitet die Person hauptsächlich? <span class="req">*</span></label>
+        <div class="help">Ort oder Umkreis</div>
+        <input type="text" id="einsatzort_{{N}}" name="einsatzort_{{N}}" placeholder="z. B. Rheine + Umkreis 50 km" required>
+        <p class="field-error" data-error-for="einsatzort_{{N}}" hidden></p>
+      </div>
+    </div>
+
+    <div class="subsection">Zielgruppe</div>
+    <span class="q-label">Welche Bewerber kommen für diese Stelle infrage? <span class="req">*</span></span>
+    <div class="checkbox-group" data-group-req="min1" data-group-name="zielgruppe_{{N}}">
+      <label><input type="checkbox" name="zielgruppe_{{N}}" value="Berufserfahrene Fachkräfte"> Berufserfahrene Fachkräfte</label>
+      <label><input type="checkbox" name="zielgruppe_{{N}}" value="Berufseinsteiger"> Berufseinsteiger</label>
+      <label><input type="checkbox" name="zielgruppe_{{N}}" value="Quereinsteiger"> Quereinsteiger</label>
+      <label><input type="checkbox" name="zielgruppe_{{N}}" value="Wiedereinsteiger"> Wiedereinsteiger</label>
+      <label><input type="checkbox" name="zielgruppe_{{N}}" value="Auszubildende"> Auszubildende</label>
+      <label><input type="checkbox" name="zielgruppe_{{N}}" value="Studierende / Werkstudenten"> Studierende / Werkstudenten</label>
+      <label><input type="checkbox" name="zielgruppe_{{N}}" value="Sonstige"> Sonstige</label>
+    </div>
+    <p class="field-error" data-error-for="zielgruppe_{{N}}" hidden></p>
+    <div class="cond" data-cond-field="zielgruppe_{{N}}" data-cond-kind="checkbox-includes" data-cond-value="Sonstige" hidden>
+      <label for="zielgruppe_sonstige_{{N}}">Bitte Zielgruppe kurz beschreiben</label>
+      <input type="text" id="zielgruppe_sonstige_{{N}}" name="zielgruppe_sonstige_{{N}}" data-req-when-shown>
+      <p class="field-error" data-error-for="zielgruppe_sonstige_{{N}}" hidden></p>
+    </div>
+
+    <div class="subsection">Aufgaben &amp; Anforderungen</div>
+    <label for="aufgaben_{{N}}">Was macht die Person konkret? <span class="req">*</span></label>
+    <div class="help">Die 3–5 wichtigsten Aufgaben im Arbeitsalltag</div>
+    <textarea id="aufgaben_{{N}}" name="aufgaben_{{N}}" placeholder="z. B.&#10;- Heizungs- und Sanitäranlagen beim Kunden installieren&#10;- Wartung und Reparatur bestehender Anlagen&#10;- Störungsdienst im Wechsel mit den Kollegen" required></textarea>
+    <p class="field-error" data-error-for="aufgaben_{{N}}" hidden></p>
+
+    <label for="muss_kriterien_{{N}}">Welche 3 Anforderungen sind unbedingt erforderlich? <span class="req">*</span></label>
+    <div class="help">Zum Beispiel: Führerschein Klasse B, abgeschlossene Ausbildung, Deutsch für den Kundenkontakt.</div>
+    <textarea id="muss_kriterien_{{N}}" name="muss_kriterien_{{N}}" placeholder="z. B.&#10;1. Abgeschlossene Ausbildung im SHK-Bereich&#10;2. Führerschein Klasse B&#10;3. Deutsch für den Kundenkontakt" required></textarea>
+    <p class="field-error" data-error-for="muss_kriterien_{{N}}" hidden></p>
+
+    <label for="kann_kriterien_{{N}}">Welche Kenntnisse oder Erfahrungen wären wünschenswert? <span class="opt">(optional)</span></label>
+    <div class="help">Was wäre ein Plus, ist aber kein Ausschlusskriterium?</div>
+    <textarea id="kann_kriterien_{{N}}" name="kann_kriterien_{{N}}" placeholder="z. B. Erfahrung mit Wärmepumpen, Meisterbrief, erste Führungserfahrung"></textarea>
+
+    <label for="qualifikation_{{N}}">Gewünschte Ausbildung / formale Qualifikation <span class="opt">(optional)</span></label>
+    <div class="help">Auch: „keine bestimmte Ausbildung nötig, wir lernen an"</div>
+    <textarea id="qualifikation_{{N}}" name="qualifikation_{{N}}" placeholder="z. B. Ausbildung als Anlagenmechaniker/-in SHK oder vergleichbar"></textarea>
+
+    <label for="ausschluss_kriterien_{{N}}">Gibt es Ausschlusskriterien? <span class="opt">(optional)</span></label>
+    <div class="help">Zum Beispiel: bestimmte Schichten nicht möglich, zwingender Führerschein, Einsatz nur im definierten Umkreis. Bitte nur arbeitsbezogene Anforderungen nennen.</div>
+    <textarea id="ausschluss_kriterien_{{N}}" name="ausschluss_kriterien_{{N}}" placeholder="z. B. ohne Führerschein Klasse B nicht möglich; kein reiner Nachtdienst"></textarea>
+
+    <span class="q-label">Sind besondere Fachkenntnisse nötig? <span class="req">*</span></span>
+    <div class="choice-list" data-group-req="one" data-group-name="fachkenntnisse_noetig_{{N}}">
+      <label><input type="radio" name="fachkenntnisse_noetig_{{N}}" value="Besondere Fachkenntnisse erforderlich"> Besondere Fachkenntnisse erforderlich</label>
+      <label><input type="radio" name="fachkenntnisse_noetig_{{N}}" value="Keine besonderen Fachkenntnisse erforderlich – Einarbeitung erfolgt"> Keine besonderen Fachkenntnisse erforderlich – Einarbeitung erfolgt</label>
+    </div>
+    <p class="field-error" data-error-for="fachkenntnisse_noetig_{{N}}" hidden></p>
+    <div class="cond" data-cond-field="fachkenntnisse_noetig_{{N}}" data-cond-kind="radio-equals" data-cond-value="Besondere Fachkenntnisse erforderlich" hidden>
+      <label for="fachkenntnisse_{{N}}">Welche Fachkenntnisse sind wichtig?</label>
+      <div class="help">z. B. bestimmte Software, Maschinen, Werkzeuge oder Fachgebiete</div>
+      <textarea id="fachkenntnisse_{{N}}" name="fachkenntnisse_{{N}}" placeholder="z. B. Erfahrung mit Wärmepumpen, Installationspläne lesen, sicherer Umgang mit Messtechnik" data-req-when-shown></textarea>
+      <p class="field-error" data-error-for="fachkenntnisse_{{N}}" hidden></p>
+    </div>
+
+    <label for="eigenschaften_{{N}}">Welche Eigenschaften soll die Person mitbringen? <span class="opt">(optional)</span></label>
+    <div class="help">z. B. zuverlässig, selbstständig, kundenfreundlich, teamfähig</div>
+    <textarea id="eigenschaften_{{N}}" name="eigenschaften_{{N}}" placeholder="z. B. zuverlässig, freundlich im Kundenkontakt, arbeitet gern im Team"></textarea>
+
+    <label for="sprachkenntnisse_{{N}}">Werden bestimmte Sprachkenntnisse gebraucht? <span class="opt">(optional)</span></label>
+    <input type="text" id="sprachkenntnisse_{{N}}" name="sprachkenntnisse_{{N}}" placeholder="z. B. Deutsch für den Kundenkontakt, Englisch von Vorteil">
+
+    <div class="subsection">Anstellung &amp; Arbeitszeit</div>
+    <span class="q-label">Arbeitsumfang <span class="req">*</span></span>
+    <div class="choice-list" data-group-req="one" data-group-name="arbeitsumfang_{{N}}">
+      <label><input type="radio" name="arbeitsumfang_{{N}}" value="Vollzeit"> Vollzeit</label>
+      <label><input type="radio" name="arbeitsumfang_{{N}}" value="Teilzeit"> Teilzeit</label>
+      <label><input type="radio" name="arbeitsumfang_{{N}}" value="Vollzeit oder Teilzeit möglich"> Vollzeit oder Teilzeit möglich</label>
+    </div>
+    <p class="field-error" data-error-for="arbeitsumfang_{{N}}" hidden></p>
+
+    <span class="q-label">Vertragsart <span class="req">*</span></span>
+    <div class="choice-list" data-group-req="one" data-group-name="vertragsart_{{N}}">
+      <label><input type="radio" name="vertragsart_{{N}}" value="Unbefristet"> Unbefristet</label>
+      <label><input type="radio" name="vertragsart_{{N}}" value="Befristet"> Befristet</label>
+      <label><input type="radio" name="vertragsart_{{N}}" value="Noch offen / im Gespräch zu klären"> Noch offen / im Gespräch zu klären</label>
+    </div>
+    <p class="field-error" data-error-for="vertragsart_{{N}}" hidden></p>
+
+    <label for="wochenstunden_{{N}}">Wie viele Wochenstunden umfasst die Stelle? <span class="req">*</span></label>
+    <div class="help">Bei „Vollzeit oder Teilzeit möglich" gern einen Stundenkorridor angeben.</div>
+    <input type="text" id="wochenstunden_{{N}}" name="wochenstunden_{{N}}" placeholder="z. B. 38,5 Std./Woche oder 20–30 Std./Woche" required>
+    <p class="field-error" data-error-for="wochenstunden_{{N}}" hidden></p>
+
+    <span class="q-label">Wie sind die Arbeitszeiten? <span class="opt">(optional)</span></span>
+    <div class="checkbox-group">
+      <label><input type="checkbox" name="arbeitszeiten_{{N}}" value="Feste Zeiten"> Feste Zeiten</label>
+      <label><input type="checkbox" name="arbeitszeiten_{{N}}" value="Gleitzeit"> Gleitzeit</label>
+      <label><input type="checkbox" name="arbeitszeiten_{{N}}" value="Frühschicht"> Frühschicht</label>
+      <label><input type="checkbox" name="arbeitszeiten_{{N}}" value="Spätschicht"> Spätschicht</label>
+      <label><input type="checkbox" name="arbeitszeiten_{{N}}" value="Nachtschicht"> Nachtschicht</label>
+      <label><input type="checkbox" name="arbeitszeiten_{{N}}" value="Wochenendarbeit"> Wochenendarbeit</label>
+      <label><input type="checkbox" name="arbeitszeiten_{{N}}" value="Rufbereitschaft"> Rufbereitschaft</label>
+    </div>
+    <div class="cond" data-cond-field="arbeitszeiten_{{N}}" data-cond-kind="checkbox-includes-any" data-cond-value="Frühschicht|Spätschicht|Nachtschicht" hidden>
+      <label for="schichtmodell_{{N}}">Wie sieht das Schichtmodell aus? <span class="opt">(optional)</span></label>
+      <input type="text" id="schichtmodell_{{N}}" name="schichtmodell_{{N}}" placeholder="z. B. Früh 6–14, Spät 14–22, wöchentlicher Wechsel">
+    </div>
+    <div class="cond" data-cond-field="arbeitszeiten_{{N}}" data-cond-kind="checkbox-includes" data-cond-value="Rufbereitschaft" hidden>
+      <label for="rufbereitschaft_haeufigkeit_{{N}}">Wie häufig fällt Rufbereitschaft an? <span class="opt">(optional)</span></label>
+      <input type="text" id="rufbereitschaft_haeufigkeit_{{N}}" name="rufbereitschaft_haeufigkeit_{{N}}" placeholder="z. B. 1 Woche pro Monat">
+    </div>
+
+    <label for="arbeitszeiten_details_{{N}}">Weitere Details zu den Arbeitszeiten? <span class="opt">(optional)</span></label>
+    <input type="text" id="arbeitszeiten_details_{{N}}" name="arbeitszeiten_details_{{N}}" placeholder="z. B. Mo–Fr, gelegentlich Samstag; Kernzeit 9–15 Uhr">
+
+    <div class="subsection">Vergütung</div>
+    <span class="q-label">Wie sollen wir mit der Vergütung in der Kampagne umgehen? <span class="req">*</span></span>
+    <div class="choice-list" data-group-req="one" data-group-name="gehalt_umgang_{{N}}">
+      <label><input type="radio" name="gehalt_umgang_{{N}}" value="Gehaltsspanne in der Anzeige veröffentlichen"> Gehaltsspanne in der Anzeige veröffentlichen</label>
+      <label><input type="radio" name="gehalt_umgang_{{N}}" value="Gehalt intern angeben, nicht veröffentlichen"> Gehalt intern für die Kampagnenplanung angeben, nicht veröffentlichen</label>
+      <label><input type="radio" name="gehalt_umgang_{{N}}" value="Vergütung noch offen – im Kick-off-Call klären"> Vergütung noch offen – bitte im Kick-off-Call klären</label>
+    </div>
+    <p class="field-error" data-error-for="gehalt_umgang_{{N}}" hidden></p>
+    <div class="cond" data-cond-field="gehalt_umgang_{{N}}" data-cond-kind="radio-equals-any" data-cond-value="Gehaltsspanne in der Anzeige veröffentlichen|Gehalt intern angeben, nicht veröffentlichen" hidden>
+      <label for="gehalt_{{N}}">Gehaltsspanne</label>
+      <div class="help">Bitte brutto angeben, z. B. 18–22 €/Std., 3.200–3.800 €/Monat oder 42.000–50.000 €/Jahr.</div>
+      <input type="text" id="gehalt_{{N}}" name="gehalt_{{N}}" placeholder="z. B. 42.000–50.000 €/Jahr" data-req-when-shown>
+      <p class="field-error" data-error-for="gehalt_{{N}}" hidden></p>
+    </div>
+
+    <div class="subsection">Besetzung</div>
+    <label for="besetzung_zeitpunkt_{{N}}">Wann soll die Stelle idealerweise besetzt sein? <span class="req">*</span></label>
+    <select id="besetzung_zeitpunkt_{{N}}" name="besetzung_zeitpunkt_{{N}}" required>
+      <option value="">Bitte auswählen</option>
+      <option value="So schnell wie möglich">So schnell wie möglich</option>
+      <option value="Innerhalb der nächsten 30 Tage">Innerhalb der nächsten 30 Tage</option>
+      <option value="In 1–3 Monaten">In 1–3 Monaten</option>
+      <option value="Zu einem konkreten Datum">Zu einem konkreten Datum</option>
+      <option value="Flexibel / noch offen">Flexibel / noch offen</option>
+    </select>
+    <p class="field-error" data-error-for="besetzung_zeitpunkt_{{N}}" hidden></p>
+    <div class="cond" data-cond-field="besetzung_zeitpunkt_{{N}}" data-cond-kind="select-equals" data-cond-value="Zu einem konkreten Datum" hidden>
+      <label for="besetzung_datum_{{N}}">Konkretes Datum</label>
+      <input type="date" id="besetzung_datum_{{N}}" name="besetzung_datum_{{N}}" data-req-when-shown>
+      <p class="field-error" data-error-for="besetzung_datum_{{N}}" hidden></p>
+    </div>
+    <label for="wann_besetzt_{{N}}">Ergänzung zum Zeitpunkt <span class="opt">(optional)</span></label>
+    <input type="text" id="wann_besetzt_{{N}}" name="wann_besetzt_{{N}}" placeholder="z. B. Einarbeitung ab Mai, Start flexibel">
+
+    <div class="subsection">Reisetätigkeit</div>
+    <label for="reiseanteil_{{N}}">Muss die Person reisen oder im Außendienst arbeiten? <span class="opt">(optional)</span></label>
+    <select id="reiseanteil_{{N}}" name="reiseanteil_{{N}}">
+      <option value="">Bitte auswählen</option>
+      <option value="Nein">Nein, kein Reiseanteil</option>
+      <option value="Gelegentlich regional">Gelegentlich, regional</option>
+      <option value="Regelmäßig">Regelmäßig</option>
+      <option value="Überwiegend Außendienst">Überwiegend Außendienst</option>
+    </select>
+    <div class="cond" data-cond-field="reiseanteil_{{N}}" data-cond-kind="select-not" data-cond-value="Nein" hidden>
+      <span class="q-label">Ist ein Führerschein erforderlich? <span class="opt">(optional)</span></span>
+      <div class="checkbox-group">
+        <label><input type="radio" name="aussendienst_fuehrerschein_{{N}}" value="Ja"> Ja</label>
+        <label><input type="radio" name="aussendienst_fuehrerschein_{{N}}" value="Nein"> Nein</label>
+      </div>
+      <span class="q-label">Steht ein Firmenfahrzeug zur Verfügung? <span class="opt">(optional)</span></span>
+      <div class="checkbox-group">
+        <label><input type="radio" name="firmenfahrzeug_{{N}}" value="Ja"> Ja</label>
+        <label><input type="radio" name="firmenfahrzeug_{{N}}" value="Nein"> Nein</label>
+        <label><input type="radio" name="firmenfahrzeug_{{N}}" value="Noch offen"> Noch offen</label>
+      </div>
+    </div>
+    <label for="fuehrerschein_{{N}}">Welcher Führerschein wird gebraucht? <span class="opt">(optional)</span></label>
+    <input type="text" id="fuehrerschein_{{N}}" name="fuehrerschein_{{N}}" placeholder="z. B. Klasse B (PKW)">
+  </div>
+</template>
+
 <script>
-  const form = document.getElementById('recruitingForm');
-  const steps = Array.from(document.querySelectorAll('.step'));
-  const errorBox = document.getElementById('form-error');
-  const progressFill = document.getElementById('progressFill');
-  const progressLabel = document.getElementById('progressLabel');
-  const submitBtn = document.getElementById('submitBtn');
-  const iframe = document.getElementById('hidden_iframe');
-  let current = 0;
-  let submitting = false;
+  (function () {
+    'use strict';
 
-  function showStep(index) {
-    steps.forEach((step, i) => step.classList.toggle('active', i === index));
-    const pct = (index / (steps.length - 1)) * 100;
-    progressFill.style.width = pct + '%';
-    progressLabel.textContent = 'Schritt ' + (index + 1) + ' von ' + steps.length;
-    errorBox.style.display = 'none';
-    window.scrollTo({top: 0, behavior: 'smooth'});
-  }
+    var form = document.getElementById('recruitingForm');
+    var steps = Array.prototype.slice.call(document.querySelectorAll('.step'));
+    var errorBox = document.getElementById('form-error');
+    var progressFill = document.getElementById('progressFill');
+    var progressLabel = document.getElementById('progressLabel');
+    var submitBtn = document.getElementById('submitBtn');
+    var iframe = document.getElementById('hidden_iframe');
+    var current = 0;
+    var submitting = false;
 
-  function validateStep(index) {
-    const fields = steps[index].querySelectorAll('input, textarea, select');
-    for (const field of fields) {
-      if (!field.checkValidity()) {
-        field.reportValidity();
-        return false;
-      }
+    var MAX_POSITIONS = 5;
+    var positionsContainer = document.getElementById('positionsContainer');
+    var addPositionBtn = document.getElementById('addPositionBtn');
+    var positionsCapNote = document.getElementById('positionsCapNote');
+    var positionTpl = document.getElementById('positionTpl').innerHTML;
+    var positionUid = 0;
+
+    /* ---------- Schritt-Navigation ---------- */
+    function showStep(index) {
+      steps.forEach(function (step, i) { step.classList.toggle('active', i === index); });
+      var pct = (index / (steps.length - 1)) * 100;
+      progressFill.style.width = pct + '%';
+      progressLabel.textContent = 'Schritt ' + (index + 1) + ' von ' + steps.length;
+      errorBox.style.display = 'none';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-    return true;
-  }
 
-  document.querySelectorAll('.btn-next').forEach(btn => {
-    btn.addEventListener('click', () => {
-      if (!validateStep(current)) {
-        errorBox.style.display = 'block';
-        return;
-      }
-      current++;
-      showStep(current);
-    });
-  });
-
-  document.querySelectorAll('.btn-back').forEach(btn => {
-    btn.addEventListener('click', () => {
-      current--;
-      showStep(current);
-    });
-  });
-
-  form.addEventListener('submit', function (e) {
-    if (!validateStep(current)) {
-      e.preventDefault();
-      errorBox.style.display = 'block';
-      return;
+    /* ---------- Stellen (mehrere Berufe pro Anfrage) ---------- */
+    function blockCount() {
+      return positionsContainer.querySelectorAll('.position-block').length;
     }
-    submitting = true;
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Wird gesendet …';
-    // Die eigentliche Übermittlung läuft nativ in den versteckten iframe (siehe form target).
-  });
 
-  iframe.addEventListener('load', function () {
-    if (submitting) {
-      window.location.href = 'danke.html';
+    function renderPositionTemplate(n) {
+      return positionTpl.replace(/\{\{N\}\}/g, n);
     }
-  });
 
-  // --- Mehrere Stellen (verschiedene Berufe) in einer Anfrage ---
-  const MAX_POSITIONS = 5;
-  const positionsContainer = document.getElementById('positionsContainer');
-  const addPositionBtn = document.getElementById('addPositionBtn');
-  const positionsCapNote = document.getElementById('positionsCapNote');
-  let positionCounter = 1; // steigt nur, wird nie wiederverwendet (auch nach "Entfernen" nicht)
+    function renumberPositions() {
+      var blocks = positionsContainer.querySelectorAll('.position-block');
+      Array.prototype.forEach.call(blocks, function (block, idx) {
+        block.querySelector('.position-heading').textContent = 'Stelle ' + (idx + 1);
+        block.querySelector('.btn-remove-position').hidden = blocks.length <= 1;
+      });
+    }
 
-  function positionBlockHTML(n) {
-    return `
-      <div class="position-block" data-position="${n}">
-        <div class="position-header">
-          <p class="position-heading"></p>
-          <button type="button" class="btn-remove-position" data-target="${n}">Entfernen</button>
-        </div>
+    function updateAddButtonState() {
+      var atCap = blockCount() >= MAX_POSITIONS;
+      addPositionBtn.disabled = atCap;
+      addPositionBtn.hidden = atCap;
+      positionsCapNote.hidden = !atCap;
+    }
 
-        <label for="jobtitel_${n}">Wie soll die Stelle heißen? <span class="req">*</span></label>
-        <div class="help">z. B. Bürokraft, Elektriker, Verkäuferin (m/w/d)</div>
-        <input type="text" id="jobtitel_${n}" name="jobtitel_${n}" placeholder="z. B. Anlagenmechaniker SHK (m/w/d)" required>
+    function mountPosition() {
+      if (blockCount() >= MAX_POSITIONS) return;
+      positionUid++;
+      positionsContainer.insertAdjacentHTML('beforeend', renderPositionTemplate(positionUid));
+      renumberPositions();
+      updateAddButtonState();
+      applyConditionals();
+    }
 
-        <div class="row2">
-          <div>
-            <label for="anzahl_stellen_${n}">Wie viele Stellen sind offen?</label>
-            <input type="number" id="anzahl_stellen_${n}" name="anzahl_stellen_${n}" min="1" value="1">
-          </div>
-          <div>
-            <label for="einsatzort_${n}">Wo arbeitet die Person hauptsächlich? <span class="req">*</span></label>
-            <div class="help">Ort oder Umkreis</div>
-            <input type="text" id="einsatzort_${n}" name="einsatzort_${n}" placeholder="z. B. Rheine + Umkreis 50 km" required>
-          </div>
-        </div>
+    addPositionBtn.addEventListener('click', mountPosition);
 
-        <label for="aufgaben_${n}">Was macht die Person konkret? <span class="req">*</span></label>
-        <div class="help">Die 3–5 wichtigsten Aufgaben im Arbeitsalltag</div>
-        <textarea id="aufgaben_${n}" name="aufgaben_${n}" placeholder="z. B.&#10;- Heizungs- und Sanitäranlagen beim Kunden installieren&#10;- Wartung und Reparatur bestehender Anlagen&#10;- Störungsdienst im Wechsel mit den Kollegen" required></textarea>
-
-        <label>Welche Art von Anstellung ist das?</label>
-        <div class="checkbox-group">
-          <label><input type="checkbox" name="anstellungsart_${n}" value="Vollzeit"> Vollzeit</label>
-          <label><input type="checkbox" name="anstellungsart_${n}" value="Teilzeit"> Teilzeit</label>
-          <label><input type="checkbox" name="anstellungsart_${n}" value="Befristet"> Befristet</label>
-          <label><input type="checkbox" name="anstellungsart_${n}" value="Unbefristet"> Unbefristet</label>
-        </div>
-
-        <label>Wie sind die Arbeitszeiten? <span class="opt">(optional)</span></label>
-        <div class="checkbox-group">
-          <label><input type="checkbox" name="arbeitszeiten_${n}" value="Feste Zeiten"> Feste Zeiten</label>
-          <label><input type="checkbox" name="arbeitszeiten_${n}" value="Gleitzeit"> Gleitzeit</label>
-          <label><input type="checkbox" name="arbeitszeiten_${n}" value="Frühschicht"> Frühschicht</label>
-          <label><input type="checkbox" name="arbeitszeiten_${n}" value="Spätschicht"> Spätschicht</label>
-          <label><input type="checkbox" name="arbeitszeiten_${n}" value="Nachtschicht"> Nachtschicht</label>
-          <label><input type="checkbox" name="arbeitszeiten_${n}" value="Wochenendarbeit"> Wochenendarbeit</label>
-          <label><input type="checkbox" name="arbeitszeiten_${n}" value="Rufbereitschaft"> Rufbereitschaft</label>
-        </div>
-
-        <label for="arbeitszeiten_details_${n}">Details zu den Arbeitszeiten? <span class="opt">(optional)</span></label>
-        <input type="text" id="arbeitszeiten_details_${n}" name="arbeitszeiten_details_${n}" placeholder="z. B. Mo–Fr 7–16 Uhr, 38,5 Std./Woche">
-
-        <div class="row2">
-          <div>
-            <label for="gehalt_${n}">Welche Gehaltsspanne bieten Sie? <span class="opt">(optional)</span></label>
-            <div class="help">brutto, pro Jahr — z. B. 45.000–55.000 €</div>
-            <input type="text" id="gehalt_${n}" name="gehalt_${n}" placeholder="z. B. 38.000–46.000 € oder 18–22 €/Std.">
-          </div>
-          <div>
-            <label for="wann_besetzt_${n}">Wann soll die Stelle besetzt sein? <span class="opt">(optional)</span></label>
-            <div class="help">z. B. sofort, in 2 Monaten</div>
-            <input type="text" id="wann_besetzt_${n}" name="wann_besetzt_${n}" placeholder="z. B. ab sofort">
-          </div>
-        </div>
-
-        <label for="reiseanteil_${n}">Muss die Person viel reisen? <span class="opt">(optional)</span></label>
-        <div class="help">z. B. nein, nur regional, deutschlandweit</div>
-        <input type="text" id="reiseanteil_${n}" name="reiseanteil_${n}" placeholder="z. B. nur regional, abends zu Hause">
-
-        <label for="qualifikation_${n}">Welche Ausbildung oder Erfahrung braucht die Person? <span class="opt">(optional)</span></label>
-        <div class="help">Auch: „keine Vorkenntnisse nötig, wir lernen an"</div>
-        <textarea id="qualifikation_${n}" name="qualifikation_${n}" placeholder="z. B. abgeschlossene Ausbildung im SHK-Bereich – Berufseinsteiger und Quereinsteiger mit handwerklichem Geschick auch willkommen"></textarea>
-
-        <label for="fuehrerschein_${n}">Welchen Führerschein braucht die Person? <span class="opt">(optional)</span></label>
-        <input type="text" id="fuehrerschein_${n}" name="fuehrerschein_${n}" placeholder="z. B. Klasse B (PKW)">
-
-        <label for="fachkenntnisse_${n}">Welche Fachkenntnisse sind wichtig? <span class="req">*</span></label>
-        <div class="help">z. B. bestimmte Software, Maschinen, Werkzeuge oder Fachgebiete</div>
-        <textarea id="fachkenntnisse_${n}" name="fachkenntnisse_${n}" placeholder="z. B. Erfahrung mit Wärmepumpen, Installationspläne lesen, sicherer Umgang mit Messtechnik" required></textarea>
-
-        <label for="eigenschaften_${n}">Welche Eigenschaften soll die Person mitbringen? <span class="opt">(optional)</span></label>
-        <div class="help">z. B. zuverlässig, selbstständig, kundenfreundlich, teamfähig</div>
-        <textarea id="eigenschaften_${n}" name="eigenschaften_${n}" placeholder="z. B. zuverlässig, freundlich im Kundenkontakt, arbeitet gern im Team"></textarea>
-
-        <label for="sprachkenntnisse_${n}">Werden bestimmte Sprachkenntnisse gebraucht? <span class="opt">(optional)</span></label>
-        <input type="text" id="sprachkenntnisse_${n}" name="sprachkenntnisse_${n}" placeholder="z. B. Deutsch für den Kundenkontakt, Englisch von Vorteil">
-      </div>`;
-  }
-
-  function renumberPositions() {
-    const blocks = positionsContainer.querySelectorAll('.position-block');
-    blocks.forEach((block, idx) => {
-      block.querySelector('.position-heading').textContent = 'Stelle ' + (idx + 1);
-      block.querySelector('.btn-remove-position').style.display = blocks.length > 1 ? 'inline-block' : 'none';
-    });
-  }
-
-  function updateAddButtonState() {
-    const atCap = positionCounter >= MAX_POSITIONS;
-    addPositionBtn.disabled = atCap;
-    addPositionBtn.style.display = atCap ? 'none' : 'block';
-    positionsCapNote.style.display = atCap ? 'block' : 'none';
-  }
-
-  addPositionBtn.addEventListener('click', () => {
-    if (positionCounter >= MAX_POSITIONS) return;
-    positionCounter++;
-    positionsContainer.insertAdjacentHTML('beforeend', positionBlockHTML(positionCounter));
-    renumberPositions();
-    updateAddButtonState();
-  });
-
-  positionsContainer.addEventListener('click', (e) => {
-    if (e.target.matches('.btn-remove-position')) {
-      const target = e.target.dataset.target;
-      const block = positionsContainer.querySelector(`.position-block[data-position="${target}"]`);
+    positionsContainer.addEventListener('click', function (e) {
+      var btn = e.target.closest('.btn-remove-position');
+      if (!btn) return;
+      var block = btn.closest('.position-block');
       if (block) block.remove();
       renumberPositions();
-    }
-  });
+      updateAddButtonState();
+    });
 
-  renumberPositions();
+    /* ---------- Bedingte Felder ---------- */
+    function fieldEls(scope, name) {
+      return scope.querySelectorAll('[name="' + name + '"]');
+    }
+
+    function condMatches(scope, cond) {
+      var name = cond.getAttribute('data-cond-field');
+      var kind = cond.getAttribute('data-cond-kind');
+      var val = cond.getAttribute('data-cond-value') || '';
+      var els = fieldEls(scope, name);
+      if (!els.length) return false;
+      var arr = Array.prototype.slice.call(els);
+      if (kind === 'checkbox-includes') {
+        return arr.some(function (e) { return e.checked && e.value === val; });
+      }
+      if (kind === 'checkbox-includes-any') {
+        var set1 = val.split('|');
+        return arr.some(function (e) { return e.checked && set1.indexOf(e.value) !== -1; });
+      }
+      if (kind === 'radio-equals') {
+        return arr.some(function (e) { return e.checked && e.value === val; });
+      }
+      if (kind === 'radio-equals-any') {
+        var set2 = val.split('|');
+        return arr.some(function (e) { return e.checked && set2.indexOf(e.value) !== -1; });
+      }
+      if (kind === 'radio-startswith') {
+        return arr.some(function (e) { return e.checked && e.value.indexOf(val) === 0; });
+      }
+      if (kind === 'select-equals') {
+        return els[0].value === val;
+      }
+      if (kind === 'select-not') {
+        return els[0].value !== '' && els[0].value !== val;
+      }
+      return false;
+    }
+
+    function applyConditionals() {
+      var conds = form.querySelectorAll('.cond');
+      Array.prototype.forEach.call(conds, function (cond) {
+        var scope = cond.closest('.position-block') || form;
+        var show = condMatches(scope, cond);
+        var wasShown = cond.getAttribute('data-shown') === '1';
+        cond.hidden = !show;
+        cond.setAttribute('data-shown', show ? '1' : '0');
+
+        var reqFields = cond.querySelectorAll('[data-req-when-shown]');
+        Array.prototype.forEach.call(reqFields, function (el) {
+          if (show) {
+            el.setAttribute('required', '');
+          } else {
+            el.removeAttribute('required');
+            el.classList.remove('invalid');
+          }
+        });
+
+        if (wasShown && !show) {
+          var inputs = cond.querySelectorAll('input, textarea, select');
+          Array.prototype.forEach.call(inputs, function (el) {
+            if (el.type === 'checkbox' || el.type === 'radio') { el.checked = false; }
+            else { el.value = ''; }
+          });
+          var errs = cond.querySelectorAll('.field-error');
+          Array.prototype.forEach.call(errs, function (p) { p.hidden = true; p.textContent = ''; });
+        }
+      });
+    }
+
+    /* ---------- Validierung ---------- */
+    function isVisible(el) {
+      return !el.closest('[hidden]');
+    }
+
+    function scopeOf(index) {
+      return steps[index];
+    }
+
+    function errNode(scope, name) {
+      return scope.querySelector('.field-error[data-error-for="' + name + '"]');
+    }
+
+    function setError(scope, name, msg) {
+      var p = errNode(scope, name);
+      if (p) { p.textContent = msg; p.hidden = false; }
+    }
+
+    function clearErrors(scope) {
+      Array.prototype.forEach.call(scope.querySelectorAll('.field-error'), function (p) {
+        p.hidden = true; p.textContent = '';
+      });
+      Array.prototype.forEach.call(scope.querySelectorAll('.invalid'), function (el) {
+        el.classList.remove('invalid');
+      });
+      Array.prototype.forEach.call(scope.querySelectorAll('.group-invalid'), function (el) {
+        el.classList.remove('group-invalid');
+      });
+    }
+
+    function validateStep(index) {
+      var scope = scopeOf(index);
+      clearErrors(scope);
+      var bad = [];
+
+      /* Auswahlgruppen (Checkboxen min. 1 / Radio-Pflicht) */
+      Array.prototype.forEach.call(scope.querySelectorAll('[data-group-req]'), function (group) {
+        if (!isVisible(group)) return;
+        var name = group.getAttribute('data-group-name');
+        var kind = group.getAttribute('data-group-req');
+        var els = scope.querySelectorAll('[name="' + name + '"]');
+        var anyChecked = Array.prototype.some.call(els, function (e) { return e.checked; });
+        if (!anyChecked) {
+          group.classList.add('group-invalid');
+          setError(scope, name, kind === 'one'
+            ? 'Bitte wählen Sie eine Option.'
+            : 'Bitte wählen Sie mindestens eine Option.');
+          bad.push(group);
+        }
+      });
+
+      /* Pflicht-Textfelder / Selects / Datum (sichtbar) */
+      Array.prototype.forEach.call(scope.querySelectorAll('input, textarea, select'), function (el) {
+        if (el.type === 'checkbox' || el.type === 'radio' || el.type === 'hidden') return;
+        if (!isVisible(el)) return;
+        var required = el.hasAttribute('required') || el.hasAttribute('data-req-when-shown');
+        if (!required) return;
+        var value = (el.value || '').trim();
+        if (!value) {
+          el.classList.add('invalid');
+          setError(scope, el.name, 'Bitte füllen Sie dieses Feld aus.');
+          bad.push(el);
+        } else if (el.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+          el.classList.add('invalid');
+          setError(scope, el.name, 'Bitte geben Sie eine gültige E-Mail-Adresse ein.');
+          bad.push(el);
+        }
+      });
+
+      /* Pflicht-Einzelcheckboxen (Bestätigungen) */
+      Array.prototype.forEach.call(scope.querySelectorAll('input[type="checkbox"][data-check-req]'), function (cb) {
+        if (!isVisible(cb)) return;
+        if (!cb.checked) {
+          var wrap = cb.closest('.consent, .check-line');
+          if (wrap) wrap.classList.add('group-invalid');
+          setError(scope, cb.name, 'Bitte bestätigen Sie diese Angabe.');
+          bad.push(cb);
+        }
+      });
+
+      if (bad.length) {
+        errorBox.style.display = 'block';
+        var first = bad[0];
+        try { first.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {}
+        var focusTarget = first;
+        if (!/^(INPUT|SELECT|TEXTAREA)$/.test(first.tagName)) {
+          focusTarget = first.querySelector('input, select, textarea') || first;
+        }
+        try { focusTarget.focus({ preventScroll: true }); } catch (e2) {}
+        return false;
+      }
+      errorBox.style.display = 'none';
+      return true;
+    }
+
+    function clearFieldError(el) {
+      if (!el || !el.name) return;
+      var scope = el.closest('.step');
+      if (!scope) return;
+      var name = el.name;
+      var p = errNode(scope, name);
+      if (p) { p.hidden = true; p.textContent = ''; }
+      el.classList.remove('invalid');
+      var grp = scope.querySelector('[data-group-name="' + name + '"]');
+      if (grp) grp.classList.remove('group-invalid');
+      var wrap = el.closest('.consent, .check-line');
+      if (wrap) wrap.classList.remove('group-invalid');
+    }
+
+    /* ---------- Events ---------- */
+    Array.prototype.forEach.call(document.querySelectorAll('.btn-next'), function (btn) {
+      btn.addEventListener('click', function () {
+        applyConditionals();
+        if (!validateStep(current)) return;
+        current++;
+        showStep(current);
+      });
+    });
+
+    Array.prototype.forEach.call(document.querySelectorAll('.btn-back'), function (btn) {
+      btn.addEventListener('click', function () {
+        if (current > 0) { current--; showStep(current); }
+      });
+    });
+
+    form.addEventListener('input', function (e) { clearFieldError(e.target); });
+    form.addEventListener('change', function (e) {
+      applyConditionals();
+      clearFieldError(e.target);
+    });
+
+    form.addEventListener('submit', function (e) {
+      applyConditionals();
+      for (var i = 0; i < steps.length; i++) {
+        if (!validateStep(i)) {
+          e.preventDefault();
+          current = i;
+          showStep(i);
+          validateStep(i);
+          return;
+        }
+      }
+      submitting = true;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Wird gesendet …';
+      /* Die eigentliche Übermittlung läuft nativ in den versteckten iframe (form target). */
+    });
+
+    iframe.addEventListener('load', function () {
+      if (submitting) { window.location.href = 'danke.html'; }
+    });
+
+    /* ---------- Start ---------- */
+    mountPosition();
+    applyConditionals();
+    showStep(0);
+  })();
 </script>
 
 </body>
