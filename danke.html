@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Danke für Ihre Anfrage | Elbert Marketing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a0a;
+    --panel:#141310;
+    --ink:#fcfcfc;
+    --muted:#9a9a9a;
+    --accent:#c8a454;
+    --accent-dark:#ad8a42;
+    --on-accent:#0a0a0a;
+    --line-soft:rgba(255,255,255,.10);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.55;
+  }
+  header{
+    background:var(--bg);
+    border-bottom:1px solid var(--line-soft);
+    padding:18px 24px;
+    display:flex;
+    align-items:center;
+  }
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand img{height:26px;width:auto;display:block;}
+  .brand .word{font-weight:800;letter-spacing:.04em;font-size:1rem;}
+  .brand .word b{color:var(--ink);font-weight:800;}
+  .brand .word span{color:var(--accent);font-weight:700;}
+  main{
+    max-width:560px;
+    margin:0 auto;
+    padding:84px 24px;
+    text-align:center;
+  }
+  .check{
+    width:64px;height:64px;
+    border-radius:50%;
+    background:var(--accent);
+    color:var(--on-accent);
+    display:flex;align-items:center;justify-content:center;
+    font-size:2rem;
+    margin:0 auto 26px;
+  }
+  h1{font-size:1.7rem;font-weight:800;margin:0 0 16px;color:var(--ink);}
+  p{color:var(--muted);font-size:1.05rem;}
+  .cta{
+    display:inline-block;
+    margin-top:26px;
+    color:var(--accent);
+    text-decoration:none;
+    font-weight:600;
+  }
+  .cta:hover{color:var(--accent-dark);}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <img src="logo.png" alt="Elbert Marketing Logo">
+    <span class="word"><b>ELBERT</b> <span>MARKETING</span></span>
+  </div>
+</header>
+<main>
+  <div class="check">&#10003;</div>
+  <h1>Vielen Dank für Ihre Anfrage!</h1>
+  <p>
+    Wir haben Ihre Angaben zur offenen Stelle erhalten und melden uns in der Regel
+    innerhalb von 2 Werktagen bei Ihnen.
+  </p>
+  <p>
+    Für Bild- und Videomaterial melden wir uns separat bei Ihnen — je nachdem, ob Sie
+    ein Gmail-Konto haben, per Link oder ganz einfach per E-Mail.
+  </p>
+  <a class="cta" href="index.html">&larr; Zurück zur Startseite</a>
+</main>
+</body>
+</html>

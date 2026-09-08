@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recruiting-Anfrage | Elbert Marketing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* Direkt aus einem Screenshot deiner Hauptseite ausgelesen (Pixel-Analyse). */
+    --bg:#0a0a0a;
+    --panel:#141310;
+    --panel-2:#1a1814;
+    --ink:#fcfcfc;
+    --muted:#9a9a9a;
+    --accent:#c8a454;
+    --accent-dark:#ad8a42;
+    --on-accent:#0a0a0a;
+    --line:rgba(200,164,84,.22);
+    --line-soft:rgba(255,255,255,.08);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.55;
+  }
+  header{
+    background:var(--bg);
+    border-bottom:1px solid var(--line-soft);
+    padding:18px 24px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    position:sticky;
+    top:0;
+    z-index:10;
+  }
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand img{height:28px;width:auto;display:block;}
+  .brand .word{font-weight:800;letter-spacing:.04em;font-size:1.05rem;}
+  .brand .word b{color:var(--ink);font-weight:800;}
+  .brand .word span{color:var(--accent);font-weight:700;}
+  header .sub{font-size:.82rem;color:var(--muted);}
+
+  .hero{
+    max-width:860px;
+    margin:0 auto;
+    padding:74px 24px 40px;
+    text-align:center;
+  }
+  .eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    color:var(--accent);
+    font-size:.78rem;
+    font-weight:600;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    padding:8px 16px;
+    border-radius:999px;
+    margin-bottom:26px;
+  }
+  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);}
+  h1{
+    font-size:2.4rem;
+    font-weight:800;
+    line-height:1.18;
+    letter-spacing:-.01em;
+    margin:0 0 20px;
+    color:var(--ink);
+  }
+  .hero p.lead{
+    font-size:1.15rem;
+    color:var(--muted);
+    max-width:600px;
+    margin:0 auto 36px;
+  }
+  .cta{
+    display:inline-block;
+    background:var(--accent);
+    color:var(--on-accent);
+    text-decoration:none;
+    font-weight:700;
+    padding:16px 34px;
+    border-radius:999px;
+    font-size:1.05rem;
+    transition:background .15s ease;
+  }
+  .cta:hover{background:var(--accent-dark);}
+  .note{
+    margin-top:18px;
+    font-size:.9rem;
+    color:var(--muted);
+  }
+  .steps{
+    max-width:960px;
+    margin:30px auto 70px;
+    padding:0 24px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+  }
+  .step-card{
+    background:var(--panel);
+    border:1px solid var(--line-soft);
+    border-radius:14px;
+    padding:26px 22px;
+  }
+  .step-card .num{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:32px;height:32px;
+    border-radius:50%;
+    background:var(--accent);
+    color:var(--on-accent);
+    font-weight:800;
+    margin-bottom:14px;
+  }
+  .step-card h3{margin:0 0 8px;font-size:1.05rem;color:var(--ink);}
+  .step-card p{margin:0;color:var(--muted);font-size:.95rem;}
+  .who{
+    background:var(--panel-2);
+    border-top:1px solid var(--line-soft);
+    border-bottom:1px solid var(--line-soft);
+    padding:56px 24px;
+  }
+  .who-inner{
+    max-width:800px;
+    margin:0 auto;
+    text-align:center;
+  }
+  .who h2{font-size:1.5rem;margin:0 0 14px;font-weight:800;color:var(--ink);}
+  .who p{color:var(--muted);margin:0 0 8px;}
+  .tags{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:10px;
+    margin-top:26px;
+  }
+  .tag{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:9px 18px;
+    font-size:.88rem;
+    color:var(--accent);
+  }
+  footer{
+    text-align:center;
+    padding:36px 24px 52px;
+    color:var(--muted);
+    font-size:.85rem;
+  }
+  footer a{color:var(--muted);}
+  @media (max-width:720px){
+    .steps{grid-template-columns:1fr;}
+    h1{font-size:1.85rem;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <img src="logo.png" alt="Elbert Marketing Logo">
+    <span class="word"><b>ELBERT</b> <span>MARKETING</span></span>
+  </div>
+  <div class="sub">Recruiting-Kampagnen für Ihr Unternehmen</div>
+</header>
+
+<section class="hero">
+  <span class="eyebrow"><span class="dot"></span> Für Unternehmen mit einer offenen Stelle</span>
+  <h1>Ihr nächster Mitarbeiter beginnt mit ein paar Fragen</h1>
+  <p class="lead">
+    Egal in welcher Branche Sie tätig sind: Beantworten Sie unsere kurzen Fragen zu
+    Ihrer offenen Stelle, und wir übernehmen die Recruiting-Kampagne für Sie.
+  </p>
+  <a class="cta" href="anfrage.html">Jetzt Anfrage starten &rarr;</a>
+  <p class="note">Dauert etwa 5 Minuten</p>
+</section>
+
+<section class="steps">
+  <div class="step-card">
+    <div class="num">1</div>
+    <h3>Fragen beantworten</h3>
+    <p>Sie beantworten Schritt für Schritt ein paar Fragen zu Ihrem Betrieb und der offenen Stelle.</p>
+  </div>
+  <div class="step-card">
+    <div class="num">2</div>
+    <h3>Wir melden uns</h3>
+    <p>Ihre Antworten kommen direkt bei uns an. Wir prüfen alles und melden uns kurzfristig bei Ihnen.</p>
+  </div>
+  <div class="step-card">
+    <div class="num">3</div>
+    <h3>Kampagne startet</h3>
+    <p>Auf Basis Ihrer Antworten bauen wir die passende Recruiting-Kampagne für Ihre Stelle auf.</p>
+  </div>
+</section>
+
+<section class="who">
+  <div class="who-inner">
+    <h2>Für welche Stellen ist das gedacht?</h2>
+    <p>Für jede offene Stelle — egal in welcher Branche.</p>
+    <div class="tags">
+      <span class="tag">Handwerk</span>
+      <span class="tag">Industrie & Produktion</span>
+      <span class="tag">Bau & Technik</span>
+      <span class="tag">Büro & Verwaltung</span>
+      <span class="tag">Handel & Verkauf</span>
+      <span class="tag">Gastronomie & Tourismus</span>
+      <span class="tag">Gesundheit & Pflege</span>
+      <span class="tag">Logistik & Transport</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  © <span id="year"></span> Elbert Marketing · Fragen? <a href="mailto:info.infoelbert@gmail.com">info.infoelbert@gmail.com</a>
+</footer>
+
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>

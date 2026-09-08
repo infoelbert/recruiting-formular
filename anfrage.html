@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recruiting-Anfrage | Elbert Marketing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* Direkt aus einem Screenshot deiner Hauptseite ausgelesen (Pixel-Analyse). */
+    --bg:#0a0a0a;
+    --panel:#141310;
+    --panel-2:#1a1814;
+    --field:#17160f;
+    --ink:#fcfcfc;
+    --muted:#9a9a9a;
+    --accent:#c8a454;
+    --accent-dark:#ad8a42;
+    --on-accent:#0a0a0a;
+    --line:rgba(200,164,84,.22);
+    --line-soft:rgba(255,255,255,.10);
+    --error:#e08a7a;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.5;
+  }
+  header{
+    background:var(--bg);
+    border-bottom:1px solid var(--line-soft);
+    padding:18px 24px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    position:sticky;
+    top:0;
+    z-index:10;
+  }
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand img{height:26px;width:auto;display:block;}
+  .brand .word{font-weight:800;letter-spacing:.04em;font-size:1rem;}
+  .brand .word b{color:var(--ink);font-weight:800;}
+  .brand .word span{color:var(--accent);font-weight:700;}
+  header a.back{color:var(--muted);text-decoration:none;font-size:.9rem;}
+  header a.back:hover{color:var(--ink);}
+
+  main{max-width:640px;margin:0 auto;padding:36px 20px 90px;}
+
+  .intro{margin-bottom:26px;}
+  .intro h1{font-size:1.6rem;font-weight:800;margin:0 0 10px;color:var(--ink);}
+  .intro p{color:var(--muted);margin:0;font-size:.98rem;}
+
+  .progress-track{
+    height:6px;background:var(--panel);border-radius:999px;overflow:hidden;margin-top:24px;
+  }
+  .progress-fill{
+    height:100%;width:20%;background:var(--accent);border-radius:999px;
+    transition:width .25s ease;
+  }
+  .progress-label{
+    margin-top:8px;font-size:.82rem;color:var(--muted);font-weight:600;
+  }
+
+  form{margin-top:28px;}
+
+  .step{display:none;}
+  .step.active{display:block;}
+
+  .step h2{
+    font-size:1.25rem;
+    font-weight:800;
+    margin:0 0 22px;
+    color:var(--ink);
+  }
+
+  label{
+    display:block;
+    font-size:.95rem;
+    font-weight:600;
+    margin:20px 0 6px;
+    color:var(--ink);
+  }
+  label:first-of-type{margin-top:0;}
+  label .opt{font-weight:400;color:var(--muted);}
+  label .req{color:var(--accent);}
+  .help{
+    font-size:.85rem;
+    color:var(--muted);
+    margin:-2px 0 7px;
+  }
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="date"],
+  select,
+  textarea{
+    width:100%;
+    padding:12px 14px;
+    border:1px solid var(--line-soft);
+    border-radius:8px;
+    font-size:1rem;
+    font-family:inherit;
+    background:var(--field);
+    color:var(--ink);
+  }
+  textarea{resize:vertical;min-height:88px;}
+  input::placeholder, textarea::placeholder{color:#6b6b6b;}
+  input:focus, select:focus, textarea:focus{
+    outline:none;
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px rgba(200,164,84,.18);
+  }
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media (max-width:560px){
+    .row2{grid-template-columns:1fr;}
+  }
+  .checkbox-group{display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:8px;}
+  .checkbox-group label{
+    display:flex;align-items:center;gap:8px;
+    font-weight:400;font-size:.95rem;margin:0;color:var(--ink);
+  }
+  .checkbox-group input{width:auto;margin:0;accent-color:var(--accent);}
+
+  .positions-intro{
+    font-size:.85rem;
+    color:var(--muted);
+    margin:-8px 0 18px;
+  }
+  .position-block{
+    background:var(--panel);
+    border:1px solid var(--line-soft);
+    border-radius:12px;
+    padding:20px 18px 6px;
+    margin-bottom:18px;
+  }
+  .position-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:4px;
+  }
+  .position-heading{
+    font-size:1.02rem;
+    font-weight:700;
+    color:var(--accent);
+    margin:0;
+  }
+  .btn-remove-position{
+    background:none;
+    border:none;
+    color:var(--muted);
+    font-size:.82rem;
+    cursor:pointer;
+    padding:4px;
+  }
+  .btn-remove-position:hover{color:var(--error);}
+  .btn-add-position{
+    display:block;
+    width:100%;
+    background:transparent;
+    border:1px dashed var(--line);
+    color:var(--accent);
+    font-weight:600;
+    font-size:.95rem;
+    padding:13px;
+    border-radius:10px;
+    cursor:pointer;
+    margin-bottom:8px;
+    transition:background .15s ease;
+  }
+  .btn-add-position:hover{background:var(--panel);}
+  .btn-add-position:disabled{opacity:.4;cursor:default;background:none;}
+  .positions-cap-note{
+    font-size:.82rem;
+    color:var(--muted);
+    text-align:center;
+    margin:-2px 0 10px;
+    display:none;
+  }
+
+  .highlight-question{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-left:4px solid var(--accent);
+    border-radius:10px;
+    padding:18px 18px 4px;
+    margin-bottom:6px;
+  }
+
+  .consent{
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    background:var(--panel);
+    border:1px solid var(--line-soft);
+    border-radius:10px;
+    padding:16px;
+    margin-top:20px;
+  }
+  .consent input{width:auto;margin-top:3px;accent-color:var(--accent);}
+  .consent label{margin:0;font-weight:400;font-size:.88rem;color:var(--muted);}
+  .consent a{color:var(--accent);}
+
+  .honeypot{position:absolute;left:-9999px;top:-9999px;opacity:0;height:0;overflow:hidden;}
+
+  .step-actions{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:30px;
+  }
+  .btn-next, .btn-submit{
+    background:var(--accent);
+    color:var(--on-accent);
+    border:none;
+    font-weight:700;
+    font-size:1rem;
+    padding:14px 28px;
+    border-radius:999px;
+    cursor:pointer;
+    transition:background .15s ease;
+  }
+  .btn-next:hover, .btn-submit:hover{background:var(--accent-dark);}
+  .btn-back{
+    background:none;
+    border:none;
+    color:var(--muted);
+    font-weight:600;
+    font-size:.95rem;
+    cursor:pointer;
+    padding:14px 6px;
+  }
+  .btn-back:hover{color:var(--ink);}
+
+  #form-error{
+    display:none;
+    background:rgba(224,138,122,.12);
+    border:1px solid rgba(224,138,122,.4);
+    color:var(--error);
+    padding:12px 16px;
+    border-radius:8px;
+    font-size:.9rem;
+    margin-bottom:16px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <img src="logo.png" alt="Elbert Marketing Logo">
+    <span class="word"><b>ELBERT</b> <span>MARKETING</span></span>
+  </div>
+  <a class="back" href="index.html">&larr; Zurück</a>
+</header>
+
+<main>
+  <div class="intro">
+    <h1>Schön, dass wir gesprochen haben</h1>
+    <p>
+      Damit wir direkt mit Ihrer Recruiting-Kampagne starten können, brauchen wir nur noch
+      ein paar Details zu Ihrem Betrieb und der offenen Stelle von Ihnen. Dauert etwa 5 Minuten.
+    </p>
+  </div>
+
+  <div id="form-error">Bitte füllen Sie die markierten Felder aus, bevor Sie weitergehen.</div>
+
+  <!-- Sendet die Daten direkt an das Google Apps Script, das an die Seedliste-Tabelle
+       gebunden ist. Der versteckte iframe verhindert CORS-Probleme. Siehe README.md. -->
+  <form id="recruitingForm" action="https://script.google.com/macros/s/AKfycby-8GA4KdhJ4Oww2NkKI113ZxXeUerdNLeCP8xPiNyNndHzmGSkLE4Wsxf2q8Od5PbIpg/exec" method="POST" target="hidden_iframe">
+
+    <!-- Für echte Besucher unsichtbar. Füllt nur Spam-Software aus. -->
+    <div class="honeypot" aria-hidden="true">
+      <label for="website">Website</label>
+      <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+    </div>
+
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-label" id="progressLabel">Schritt 1 von 4</div>
+
+    <!-- SCHRITT 1 -->
+    <div class="step active" data-step="1">
+      <h2>Ihr Unternehmen</h2>
+
+      <label for="firmenname">Wie heißt Ihr Unternehmen? <span class="req">*</span></label>
+      <input type="text" id="firmenname" name="firmenname" required>
+
+      <label for="branche">Was für ein Betrieb sind Sie? <span class="req">*</span></label>
+      <div class="help">z. B. Handwerk, Handel, Gastronomie, Büro, Industrie</div>
+      <input type="text" id="branche" name="branche" required>
+
+      <label for="firmensitz">Wo hat Ihr Unternehmen seinen Sitz? <span class="req">*</span></label>
+      <div class="help">PLZ und Ort reichen aus</div>
+      <input type="text" id="firmensitz" name="firmensitz" required>
+
+      <div class="row2">
+        <div>
+          <label for="ansprechpartner_name">Wie heißen Sie? <span class="req">*</span></label>
+          <input type="text" id="ansprechpartner_name" name="ansprechpartner_name" required>
+        </div>
+        <div>
+          <label for="ansprechpartner_telefon">Ihre Telefonnummer <span class="req">*</span></label>
+          <input type="tel" id="ansprechpartner_telefon" name="ansprechpartner_telefon" required>
+        </div>
+      </div>
+
+      <label for="ansprechpartner_email">Ihre E-Mail-Adresse <span class="req">*</span></label>
+      <input type="email" id="ansprechpartner_email" name="ansprechpartner_email" required>
+
+      <div class="step-actions">
+        <span></span>
+        <button type="button" class="btn-next">Weiter &rarr;</button>
+      </div>
+    </div>
+
+    <!-- SCHRITT 2 -->
+    <div class="step" data-step="2">
+      <h2>Ihre offene(n) Stelle(n)</h2>
+      <p class="positions-intro">Haben Sie mehr als eine Stelle zu besetzen — auch unterschiedliche Berufe? Fügen Sie einfach weitere hinzu.</p>
+
+      <div id="positionsContainer">
+        <div class="position-block" data-position="1">
+          <div class="position-header">
+            <p class="position-heading">Stelle 1</p>
+            <button type="button" class="btn-remove-position" data-target="1" style="display:none;">Entfernen</button>
+          </div>
+
+          <label for="jobtitel_1">Wie soll die Stelle heißen? <span class="req">*</span></label>
+          <div class="help">z. B. Bürokraft, Elektriker, Verkäuferin (m/w/d)</div>
+          <input type="text" id="jobtitel_1" name="jobtitel_1" required>
+
+          <div class="row2">
+            <div>
+              <label for="anzahl_stellen_1">Wie viele Stellen sind offen?</label>
+              <input type="number" id="anzahl_stellen_1" name="anzahl_stellen_1" min="1" value="1">
+            </div>
+            <div>
+              <label for="einsatzort_1">Wo arbeitet die Person hauptsächlich? <span class="req">*</span></label>
+              <input type="text" id="einsatzort_1" name="einsatzort_1" required>
+            </div>
+          </div>
+
+          <label>Welche Art von Anstellung ist das?</label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="anstellungsart_1" value="Vollzeit"> Vollzeit</label>
+            <label><input type="checkbox" name="anstellungsart_1" value="Teilzeit"> Teilzeit</label>
+            <label><input type="checkbox" name="anstellungsart_1" value="Befristet"> Befristet</label>
+            <label><input type="checkbox" name="anstellungsart_1" value="Unbefristet"> Unbefristet</label>
+          </div>
+
+          <div class="row2">
+            <div>
+              <label for="gehalt_1">Welche Gehaltsspanne bieten Sie? <span class="opt">(optional)</span></label>
+              <div class="help">brutto, pro Jahr — z. B. 45.000–55.000 €</div>
+              <input type="text" id="gehalt_1" name="gehalt_1">
+            </div>
+            <div>
+              <label for="wann_besetzt_1">Wann soll die Stelle besetzt sein? <span class="opt">(optional)</span></label>
+              <div class="help">z. B. sofort, in 2 Monaten</div>
+              <input type="text" id="wann_besetzt_1" name="wann_besetzt_1">
+            </div>
+          </div>
+
+          <label for="reiseanteil_1">Muss die Person viel reisen? <span class="opt">(optional)</span></label>
+          <div class="help">z. B. nein, nur regional, deutschlandweit</div>
+          <input type="text" id="reiseanteil_1" name="reiseanteil_1">
+
+          <label for="qualifikation_1">Welche Ausbildung oder Erfahrung braucht die Person? <span class="opt">(optional)</span></label>
+          <textarea id="qualifikation_1" name="qualifikation_1"></textarea>
+
+          <label for="fuehrerschein_1">Welchen Führerschein braucht die Person? <span class="opt">(optional)</span></label>
+          <input type="text" id="fuehrerschein_1" name="fuehrerschein_1" placeholder="z. B. Klasse B">
+
+          <label for="fachkenntnisse_1">Welche Fachkenntnisse sind wichtig? <span class="req">*</span></label>
+          <div class="help">z. B. bestimmte Software, Maschinen, Werkzeuge oder Fachgebiete</div>
+          <textarea id="fachkenntnisse_1" name="fachkenntnisse_1" required></textarea>
+
+          <label for="eigenschaften_1">Welche Eigenschaften soll die Person mitbringen? <span class="opt">(optional)</span></label>
+          <div class="help">z. B. zuverlässig, selbstständig, kundenfreundlich, teamfähig</div>
+          <textarea id="eigenschaften_1" name="eigenschaften_1"></textarea>
+
+          <label for="sprachkenntnisse_1">Werden bestimmte Sprachkenntnisse gebraucht? <span class="opt">(optional)</span></label>
+          <input type="text" id="sprachkenntnisse_1" name="sprachkenntnisse_1">
+        </div>
+      </div>
+
+      <button type="button" id="addPositionBtn" class="btn-add-position">+ Weitere Stelle hinzufügen</button>
+      <p class="positions-cap-note" id="positionsCapNote">Mehr als 5 Stellen? Melden Sie sich gerne direkt bei uns.</p>
+
+      <div class="step-actions">
+        <button type="button" class="btn-back">&larr; Zurück</button>
+        <button type="button" class="btn-next">Weiter &rarr;</button>
+      </div>
+    </div>
+
+    <!-- SCHRITT 3 -->
+    <div class="step" data-step="3">
+      <h2>Warum bei Ihnen arbeiten?</h2>
+      <p class="help" style="margin-bottom:18px;">Diese Angaben sind besonders wichtig — sie entscheiden, ob sich jemand bei Ihnen bewirbt.</p>
+
+      <div class="highlight-question">
+        <label for="warum_wir">Warum sollten sich Bewerber für Sie entscheiden? <span class="req">*</span></label>
+        <textarea id="warum_wir" name="warum_wir" required></textarea>
+      </div>
+
+      <label for="mitarbeiter_vorteile">Was bieten Sie Ihren Mitarbeitern? <span class="opt">(optional)</span></label>
+      <div class="help">z. B. Firmenwagen, Home-Office, Weiterbildung, Urlaubstage, Prämien</div>
+      <textarea id="mitarbeiter_vorteile" name="mitarbeiter_vorteile"></textarea>
+
+      <label for="team_beschreibung">Wie würden Sie Ihr Team kurz beschreiben? <span class="opt">(optional)</span></label>
+      <textarea id="team_beschreibung" name="team_beschreibung"></textarea>
+
+      <div class="step-actions">
+        <button type="button" class="btn-back">&larr; Zurück</button>
+        <button type="button" class="btn-next">Weiter &rarr;</button>
+      </div>
+    </div>
+
+    <!-- SCHRITT 5 -->
+    <div class="step" data-step="4">
+      <h2>Fast fertig</h2>
+
+      <label for="bewerbungsweg">Wie sollen sich Bewerber bei Ihnen melden? <span class="opt">(optional)</span></label>
+      <div class="help">z. B. per E-Mail, Telefon, Bewerbungsformular</div>
+      <input type="text" id="bewerbungsweg" name="bewerbungsweg">
+
+      <label for="anmerkungen">Gibt es noch etwas, das wir wissen sollten? <span class="opt">(optional)</span></label>
+      <textarea id="anmerkungen" name="anmerkungen"></textarea>
+
+      <div class="consent">
+        <input type="checkbox" id="consent" name="consent" value="Ja" required>
+        <label for="consent">
+          Ich bin einverstanden, dass meine Angaben zur Bearbeitung dieser Anfrage gespeichert werden.
+          <a href="https://elbert-marketing.de/datenschutz" target="_blank" rel="noopener">Datenschutzerklärung</a> <span class="req">*</span>
+        </label>
+      </div>
+
+      <div class="step-actions">
+        <button type="button" class="btn-back">&larr; Zurück</button>
+        <button type="submit" class="btn-submit" id="submitBtn">Anfrage absenden &rarr;</button>
+      </div>
+    </div>
+  </form>
+
+  <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+</main>
+
+<script>
+  const form = document.getElementById('recruitingForm');
+  const steps = Array.from(document.querySelectorAll('.step'));
+  const errorBox = document.getElementById('form-error');
+  const progressFill = document.getElementById('progressFill');
+  const progressLabel = document.getElementById('progressLabel');
+  const submitBtn = document.getElementById('submitBtn');
+  const iframe = document.getElementById('hidden_iframe');
+  let current = 0;
+  let submitting = false;
+
+  function showStep(index) {
+    steps.forEach((step, i) => step.classList.toggle('active', i === index));
+    const pct = (index / (steps.length - 1)) * 100;
+    progressFill.style.width = pct + '%';
+    progressLabel.textContent = 'Schritt ' + (index + 1) + ' von ' + steps.length;
+    errorBox.style.display = 'none';
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+
+  function validateStep(index) {
+    const fields = steps[index].querySelectorAll('input, textarea, select');
+    for (const field of fields) {
+      if (!field.checkValidity()) {
+        field.reportValidity();
+        return false;
+      }
+    }
+    return true;
+  }
+
+  document.querySelectorAll('.btn-next').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (!validateStep(current)) {
+        errorBox.style.display = 'block';
+        return;
+      }
+      current++;
+      showStep(current);
+    });
+  });
+
+  document.querySelectorAll('.btn-back').forEach(btn => {
+    btn.addEventListener('click', () => {
+      current--;
+      showStep(current);
+    });
+  });
+
+  form.addEventListener('submit', function (e) {
+    if (!validateStep(current)) {
+      e.preventDefault();
+      errorBox.style.display = 'block';
+      return;
+    }
+    submitting = true;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Wird gesendet …';
+    // Die eigentliche Übermittlung läuft nativ in den versteckten iframe (siehe form target).
+  });
+
+  iframe.addEventListener('load', function () {
+    if (submitting) {
+      window.location.href = 'danke.html';
+    }
+  });
+
+  // --- Mehrere Stellen (verschiedene Berufe) in einer Anfrage ---
+  const MAX_POSITIONS = 5;
+  const positionsContainer = document.getElementById('positionsContainer');
+  const addPositionBtn = document.getElementById('addPositionBtn');
+  const positionsCapNote = document.getElementById('positionsCapNote');
+  let positionCounter = 1; // steigt nur, wird nie wiederverwendet (auch nach "Entfernen" nicht)
+
+  function positionBlockHTML(n) {
+    return `
+      <div class="position-block" data-position="${n}">
+        <div class="position-header">
+          <p class="position-heading"></p>
+          <button type="button" class="btn-remove-position" data-target="${n}">Entfernen</button>
+        </div>
+
+        <label for="jobtitel_${n}">Wie soll die Stelle heißen? <span class="req">*</span></label>
+        <div class="help">z. B. Bürokraft, Elektriker, Verkäuferin (m/w/d)</div>
+        <input type="text" id="jobtitel_${n}" name="jobtitel_${n}" required>
+
+        <div class="row2">
+          <div>
+            <label for="anzahl_stellen_${n}">Wie viele Stellen sind offen?</label>
+            <input type="number" id="anzahl_stellen_${n}" name="anzahl_stellen_${n}" min="1" value="1">
+          </div>
+          <div>
+            <label for="einsatzort_${n}">Wo arbeitet die Person hauptsächlich? <span class="req">*</span></label>
+            <input type="text" id="einsatzort_${n}" name="einsatzort_${n}" required>
+          </div>
+        </div>
+
+        <label>Welche Art von Anstellung ist das?</label>
+        <div class="checkbox-group">
+          <label><input type="checkbox" name="anstellungsart_${n}" value="Vollzeit"> Vollzeit</label>
+          <label><input type="checkbox" name="anstellungsart_${n}" value="Teilzeit"> Teilzeit</label>
+          <label><input type="checkbox" name="anstellungsart_${n}" value="Befristet"> Befristet</label>
+          <label><input type="checkbox" name="anstellungsart_${n}" value="Unbefristet"> Unbefristet</label>
+        </div>
+
+        <div class="row2">
+          <div>
+            <label for="gehalt_${n}">Welche Gehaltsspanne bieten Sie? <span class="opt">(optional)</span></label>
+            <div class="help">brutto, pro Jahr — z. B. 45.000–55.000 €</div>
+            <input type="text" id="gehalt_${n}" name="gehalt_${n}">
+          </div>
+          <div>
+            <label for="wann_besetzt_${n}">Wann soll die Stelle besetzt sein? <span class="opt">(optional)</span></label>
+            <div class="help">z. B. sofort, in 2 Monaten</div>
+            <input type="text" id="wann_besetzt_${n}" name="wann_besetzt_${n}">
+          </div>
+        </div>
+
+        <label for="reiseanteil_${n}">Muss die Person viel reisen? <span class="opt">(optional)</span></label>
+        <div class="help">z. B. nein, nur regional, deutschlandweit</div>
+        <input type="text" id="reiseanteil_${n}" name="reiseanteil_${n}">
+
+        <label for="qualifikation_${n}">Welche Ausbildung oder Erfahrung braucht die Person? <span class="opt">(optional)</span></label>
+        <textarea id="qualifikation_${n}" name="qualifikation_${n}"></textarea>
+
+        <label for="fuehrerschein_${n}">Welchen Führerschein braucht die Person? <span class="opt">(optional)</span></label>
+        <input type="text" id="fuehrerschein_${n}" name="fuehrerschein_${n}" placeholder="z. B. Klasse B">
+
+        <label for="fachkenntnisse_${n}">Welche Fachkenntnisse sind wichtig? <span class="req">*</span></label>
+        <div class="help">z. B. bestimmte Software, Maschinen, Werkzeuge oder Fachgebiete</div>
+        <textarea id="fachkenntnisse_${n}" name="fachkenntnisse_${n}" required></textarea>
+
+        <label for="eigenschaften_${n}">Welche Eigenschaften soll die Person mitbringen? <span class="opt">(optional)</span></label>
+        <div class="help">z. B. zuverlässig, selbstständig, kundenfreundlich, teamfähig</div>
+        <textarea id="eigenschaften_${n}" name="eigenschaften_${n}"></textarea>
+
+        <label for="sprachkenntnisse_${n}">Werden bestimmte Sprachkenntnisse gebraucht? <span class="opt">(optional)</span></label>
+        <input type="text" id="sprachkenntnisse_${n}" name="sprachkenntnisse_${n}">
+      </div>`;
+  }
+
+  function renumberPositions() {
+    const blocks = positionsContainer.querySelectorAll('.position-block');
+    blocks.forEach((block, idx) => {
+      block.querySelector('.position-heading').textContent = 'Stelle ' + (idx + 1);
+      block.querySelector('.btn-remove-position').style.display = blocks.length > 1 ? 'inline-block' : 'none';
+    });
+  }
+
+  function updateAddButtonState() {
+    const atCap = positionCounter >= MAX_POSITIONS;
+    addPositionBtn.disabled = atCap;
+    addPositionBtn.style.display = atCap ? 'none' : 'block';
+    positionsCapNote.style.display = atCap ? 'block' : 'none';
+  }
+
+  addPositionBtn.addEventListener('click', () => {
+    if (positionCounter >= MAX_POSITIONS) return;
+    positionCounter++;
+    positionsContainer.insertAdjacentHTML('beforeend', positionBlockHTML(positionCounter));
+    renumberPositions();
+    updateAddButtonState();
+  });
+
+  positionsContainer.addEventListener('click', (e) => {
+    if (e.target.matches('.btn-remove-position')) {
+      const target = e.target.dataset.target;
+      const block = positionsContainer.querySelector(`.position-block[data-position="${target}"]`);
+      if (block) block.remove();
+      renumberPositions();
+    }
+  });
+
+  renumberPositions();
+</script>
+
+</body>
+</html>
